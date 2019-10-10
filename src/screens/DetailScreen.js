@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, Image, List, FlatList, Text} from 'react-native';
+import {View, StyleSheet, Image, FlatList, Text} from 'react-native';
 
 import colors from '../config/colors';
 import strings from '../config/strings';
@@ -41,12 +41,14 @@ export default class DetailScreen extends Component {
   showBanner = toon => {
     return (
       <View style={styles.toonImgContainer}>
-        <Image
-          style={styles.showToonImg}
-          source={{
-            uri: toon.imageURI,
-          }}
-        />
+        <View style={styles.toonImage}>
+          <Image
+            style={styles.showToonImg}
+            source={{
+              uri: toon.imageURI,
+            }}
+          />
+        </View>
       </View>
     );
   };
@@ -86,6 +88,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   toonImgContainer: {
+    flex: 1,
+  },
+  toonImage: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',

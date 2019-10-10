@@ -25,11 +25,11 @@ const AppStack = createStackNavigator(
 const AppContainer = createAppContainer(
   createSwitchNavigator(
     {
-      //Auth: AuthStack,
+      Auth: AuthStack,
       App: AppStack,
     },
     {
-      initialRouteName: 'App',
+      initialRouteName: 'Auth',
     },
   ),
 );
