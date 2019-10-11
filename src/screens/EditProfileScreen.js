@@ -145,6 +145,9 @@ const styles = StyleSheet.create({
   uplIconContainer: {
     justifyContent: 'flex-end',
   },
+  uploadIcon: {
+    marginLeft: -30,
+  },
   editInputContainer: {
     borderWidth: 4,
   },

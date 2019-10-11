@@ -1,5 +1,14 @@
 import React, {Component} from 'react';
-import {Text, ScrollView, StyleSheet, View, Image} from 'react-native';
+import {
+  Text,
+  ScrollView,
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import colors from '../config/colors';
 import strings from '../config/strings';
@@ -54,9 +63,16 @@ export default class CreateToon extends Component {
   renderSub = () => {
     const {toons} = this.state;
     return (
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {this.showListToonWindow(toons)}
-      </ScrollView>
+      <View style={styles.toonContainer}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {this.showListToonWindow(toons)}
+        </ScrollView>
+        <View style={styles.floatBtnContainer}>
+          <TouchableOpacity style={styles.floatBtn}>
+            <Icon name="plus" size={30} color={colors.WHITE} />
+          </TouchableOpacity>
+        </View>
+      </View>
     );
   };
 
@@ -78,6 +94,9 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     width: '85%',
+  },
+  toonContainer: {
+    flex: 1,
   },
   listsContainer: {
     flex: 1,
@@ -109,5 +128,16 @@ const styles = StyleSheet.create({
     fontFamily: strings.FONT,
     fontSize: 18,
     opacity: 0.3,
+  },
+  floatBtnContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: colors.DARK_GREEN,
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    bottom: 30,
+    right: 1,
   },
 });

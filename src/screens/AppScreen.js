@@ -109,6 +109,26 @@ const YouScreenTab = createStackNavigator({
     }),
   },
 });
+
+YouScreenTab.navigationOptions = ({navigation}) => {
+  const {routes} = navigation.state;
+  let tabBarVisible;
+
+  if (routes.length > 1) {
+    routes.map(route => {
+      if (route.routeName === 'Home') {
+        tabBarVisible = true;
+      } else {
+        tabBarVisible = false;
+      }
+    });
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
+
 const FavouriteScreenTab = createStackNavigator(
   {
     Home: FavouriteScreen,
@@ -117,6 +137,7 @@ const FavouriteScreenTab = createStackNavigator(
     headerMode: 'none',
   },
 );
+
 const ProfileScreenTab = createStackNavigator({
   Home: {
     screen: ProfileScreen,
@@ -201,6 +222,26 @@ const ProfileScreenTab = createStackNavigator({
     }),
   },
 });
+
+ProfileScreenTab.navigationOptions = ({navigation}) => {
+  const {routes} = navigation.state;
+  let tabBarVisible;
+
+  if (routes.length > 1) {
+    routes.map(route => {
+      if (route.routeName === 'Home' || route.routeName === 'Edit') {
+        tabBarVisible = true;
+      } else {
+        tabBarVisible = false;
+      }
+    });
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
+
 const AppContainer = createAppContainer(
   createBottomTabNavigator(
     {
