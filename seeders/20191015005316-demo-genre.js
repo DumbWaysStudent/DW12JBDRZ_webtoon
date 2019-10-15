@@ -1,0 +1,26 @@
+"use strict";
+
+module.exports = {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.bulkInsert(
+      "genres",
+      [
+        {
+          name: "Drama",
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          name: "Romance",
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
+      ],
+      {}
+    );
+  },
+
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.bulkDelete("genres", null, {});
+  }
+};
