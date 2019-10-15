@@ -112,7 +112,7 @@ exports.getToonPages = (req, res) => {
   const epsId = req.params.id_episode;
 
   Page.findAll({
-    where: { episode_id: toonsId, toon_id: epsId },
+    where: { episode_id: epsId, toon_id: toonsId },
     attributes: { exclude: ["id", "episode_id", "toon_id"] }
   }).then(data => {
     res.send(data);
