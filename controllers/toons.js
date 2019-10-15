@@ -47,12 +47,8 @@ exports.getAllToons = (req, res) => {
     ],
     attributes: { exclude: ["genre", "created_by"] }
   }).then(data => {
-    let newData;
-    if (req.query.is_favorite == "true") {
-      newData = getFavToons(data);
-    } else {
-      newData = getToons(data);
-    }
+    const newData = getToons(data);
+
     res.send(newData);
   });
 };
