@@ -150,7 +150,16 @@ exports.showToonPages = (req, res) => {
   const epsId = req.params.id_episode;
 
   Page.findAll({
-    where: { episode_id: epsId, toon_id: toonId },
+    include: [
+      {
+        model: Episode,
+        as: "episodeId",
+        where: { toon_id: toonId, id: epsId },
+        attributes: {
+          exclude: ["id", "title", "image", "toon_id", "createdAt", "updatedAt"]
+        }
+      }
+    ],
     attributes: { exclude: ["id", "episode_id", "toon_id"] }
   }).then(data => {
     res.send(data);
