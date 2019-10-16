@@ -9,7 +9,6 @@ module.exports = {
           page: 1,
           image: "https://www.forbes.com/sites/joanmacdonald.jpg",
           episode_id: 1,
-          toon_id: 1,
           createdAt: new Date(),
           updatedAt: new Date()
         },
@@ -17,7 +16,6 @@ module.exports = {
           page: 2,
           image: "https://www.forbes.com/sites/joanmacdonald.jpg",
           episode_id: 1,
-          toon_id: 1,
           createdAt: new Date(),
           updatedAt: new Date()
         },
@@ -25,7 +23,6 @@ module.exports = {
           page: 3,
           image: "https://www.forbes.com/sites/joanmacdonald.jpg",
           episode_id: 1,
-          toon_id: 1,
           createdAt: new Date(),
           updatedAt: new Date()
         }
