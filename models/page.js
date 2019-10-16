@@ -17,20 +17,13 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notEmpty: true
         }
-      },
-      toon_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-          notEmpty: true
-        }
       }
     },
     {}
   );
   Page.associate = models => {
     Page.belongsTo(models.episode, {
-      as: "episodeID",
+      as: "episodeId",
       foreignKey: "episode_id"
     });
   };
