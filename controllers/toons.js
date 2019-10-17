@@ -298,15 +298,8 @@ exports.storeEpsToon = (req, res) => {
   const userId = req.params.user_id;
   const toonId = req.params.webtoon_id;
 
-  Episode.findAll({
-    include: [
-      {
-        model: Toon,
-        as: "toonId",
-        where: { created_by: userId, id: toonId },
-        attributes: []
-      }
-    ]
+  Toon.findAll({
+    where: { created_by: userId, id: toonId }
   }).then(items => {
     if (items.length > 0 && req.body.webtoonId == toonId) {
       Episode.create({
