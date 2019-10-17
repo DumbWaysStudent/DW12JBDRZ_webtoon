@@ -298,15 +298,8 @@ exports.storeEpsToon = (req, res) => {
   const userId = req.params.user_id;
   const toonId = req.params.webtoon_id;
 
-  Episode.findAll({
-    include: [
-      {
-        model: Toon,
-        as: "toonId",
-        where: { created_by: userId, id: toonId },
-        attributes: []
-      }
-    ]
+  Toon.findAll({
+    where: { created_by: userId, id: toonId }
   }).then(items => {
     if (items.length > 0 && req.body.webtoonId == toonId) {
       Episode.create({
@@ -410,23 +403,16 @@ exports.storeImgEps = (req, res) => {
   const toonId = req.params.webtoon_id;
   const epsId = req.params.episode_id;
 
-  Page.findAll({
+  Episode.findAll({
     include: [
       {
-        model: Episode,
-        as: "episodeId",
-        where: { toon_id: toonId, id: epsId },
-        attributes: [],
-        include: [
-          {
-            model: Toon,
-            as: "toonId",
-            where: { created_by: userId, id: toonId },
-            attributes: []
-          }
-        ]
+        model: Toon,
+        as: "toonId",
+        where: { created_by: userId, id: toonId },
+        attributes: []
       }
-    ]
+    ],
+    where: { toon_id: toonId, id: epsId }
   }).then(items => {
     if (items.length > 0 && req.body.episodeId == epsId) {
       Page.create({
