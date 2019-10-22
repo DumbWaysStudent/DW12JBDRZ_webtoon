@@ -19,7 +19,7 @@ import strings from '../../../config/strings';
 import metrics from '../../../config/metrics';
 import {setHeaderAuth} from '../../../config/api';
 import {getAuthKey} from '../../../config/auth';
-import getAllToons from '../../../_store/toons';
+import fetchAllToons from '../../../_store/toons';
 import Error from '../../../components/error';
 import Loading from '../../../components/loading';
 
@@ -29,7 +29,7 @@ class ForYou extends Component {
   }
 
   getAllToons = user_id => {
-    this.props.getAllToons(user_id);
+    this.props.fetchAllToons(user_id);
   };
 
   handleGetAllToons = async () => {
@@ -238,7 +238,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  getAllToons,
+  fetchAllToons,
 };
 
 export default connect(
