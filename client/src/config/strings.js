@@ -21,12 +21,12 @@ const strings = {
   PROFILE: 'My Profile',
   TRYAGAIN: 'Try Again',
   FAVWARN: "You don't have any favorites yet.",
-  IMAGE1_URL: 'a',
-  IMAGE2_URL: 'a',
-  IMAGE3_URL: 'a',
-  IMAGE4_URL: 'a',
-  IMAGE5_URL: 'a',
-  IMAGE6_URL: 'a',
+  IMAGE1_URL: 'dummy',
+  IMAGE2_URL: 'dummy',
+  IMAGE3_URL: 'dummy',
+  IMAGE4_URL: 'dummy',
+  IMAGE5_URL: 'dummy',
+  IMAGE6_URL: 'dummy',
   CREATE_TOON_PAGE: 'My Toon Kingdom',
   TITLE: 'Title',
   EPISODE: 'Episode',
@@ -40,11 +40,6 @@ const strings = {
   DELETE: 'Delete',
   SEARCH: 'Search here ..',
   TYPE: 'Type here ..',
-
-  GET: 'GET',
-  POST: 'POST',
-  PUT: 'PUT',
-  DELETE: 'DELETE',
 };
 
 export default strings;
