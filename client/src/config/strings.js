@@ -20,6 +20,7 @@ const strings = {
   MYFAV: 'My Favorite',
   PROFILE: 'My Profile',
   TRYAGAIN: 'Try Again',
+  FAVWARN: "You don't have any favorites yet.",
   IMAGE1_URL: 'a',
   IMAGE2_URL: 'a',
   IMAGE3_URL: 'a',

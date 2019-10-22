@@ -19,7 +19,7 @@ import strings from '../../../config/strings';
 import metrics from '../../../config/metrics';
 import {setHeaderAuth} from '../../../config/api';
 import {getAuthKey} from '../../../config/auth';
-import {getAllToons} from '../../../_store/index';
+import getAllToons from '../../../_store/toons';
 import Error from '../../../components/error';
 import Loading from '../../../components/loading';
 
@@ -46,19 +46,6 @@ class ForYou extends Component {
     return this.props.navigation.navigate(screen, params);
   };
 
-  showImage = (toon, index) => {
-    return (
-      <View key={index} style={styles.imageCont}>
-        <Image
-          style={styles.image}
-          source={{
-            uri: toon.image,
-          }}
-        />
-      </View>
-    );
-  };
-
   /**
    * const text = textEllipsis('a very long text', 10);
    * "a very ..."
@@ -78,6 +65,43 @@ class ForYou extends Component {
       }
     }
     return str;
+  };
+
+  showSearchBar = () => {
+    return (
+      <View style={styles.searchContainer}>
+        <TextInput style={styles.searchBar} placeholder={strings.SEARCH} />
+        <Icon style={styles.searchIcon} name="search" size={25} />
+      </View>
+    );
+  };
+
+  showImage = (toon, index) => {
+    return (
+      <View key={index} style={styles.imageCont}>
+        <Image
+          style={styles.image}
+          source={{
+            uri: toon.image,
+          }}
+        />
+      </View>
+    );
+  };
+
+  showBanner = toons => {
+    return (
+      <View style={styles.bannerCont}>
+        <Carousel
+          autoplay
+          autoplayTimeout={5000}
+          loop
+          index={0}
+          pageSize={metrics.BANNER}>
+          {toons.map((toon, index) => this.showImage(toon, index))}
+        </Carousel>
+      </View>
+    );
   };
 
   showFavItem = toon => {
@@ -103,10 +127,47 @@ class ForYou extends Component {
     );
   };
 
+  showFavorites = toons => {
+    const favData = toons.filter(toon => {
+      return toon.isFavorite;
+    });
+    if (favData.length > 0) {
+      return (
+        <FlatList
+          data={favData}
+          renderItem={({item}) => this.showFavItem(item)}
+          keyExtractor={item => item.id.toString()}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+        />
+      );
+    }
+    return (
+      <View style={styles.favImageCont}>
+        <Text style={styles.favWarn}>{strings.FAVWARN}</Text>
+      </View>
+    );
+  };
+
+  showHeader = toons => {
+    return (
+      <View>
+        {this.showBanner(toons)}
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>{strings.FAVORITE}</Text>
+        </View>
+        {this.showFavorites(toons)}
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>{strings.ALL}</Text>
+        </View>
+      </View>
+    );
+  };
+
   showToon = toon => {
     const containerStyle = [
       styles.toonBtn,
-      toon.isFavorite ? styles.toonBtnEnabled : styles.toonBtnDisabled,
+      toon.isFavorite ? styles.toonBtnDisabled : styles.toonBtnEnabled,
     ];
 
     return (
@@ -127,61 +188,10 @@ class ForYou extends Component {
             {this.textEllipsis(toon.title, 18)}
           </Text>
           <View style={styles.toonBtnCont}>
-            <TouchableOpacity style={containerStyle}>
+            <TouchableOpacity style={containerStyle} onPress={null}>
               <Text style={styles.toonBtnText}>{strings.ADD_FAVORITE}</Text>
             </TouchableOpacity>
           </View>
-        </View>
-      </View>
-    );
-  };
-
-  showSearchBar = () => {
-    return (
-      <View style={styles.searchContainer}>
-        <TextInput style={styles.searchBar} placeholder={strings.SEARCH} />
-        <Icon style={styles.searchIcon} name="search" size={25} />
-      </View>
-    );
-  };
-
-  showBanner = toons => {
-    return (
-      <View style={styles.bannerCont}>
-        <Carousel
-          autoplay
-          autoplayTimeout={5000}
-          loop
-          index={0}
-          pageSize={metrics.BANNER}>
-          {toons.map((toon, index) => this.showImage(toon, index))}
-        </Carousel>
-      </View>
-    );
-  };
-
-  showFavorites = toons => {
-    return (
-      <FlatList
-        data={toons}
-        renderItem={({item}) => this.showFavItem(item)}
-        keyExtractor={item => item.id.toString()}
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-      />
-    );
-  };
-
-  showHeader = toons => {
-    return (
-      <View>
-        {this.showBanner(toons)}
-        <View style={styles.textContainer}>
-          <Text style={styles.text}>{strings.FAVORITE}</Text>
-        </View>
-        {this.showFavorites(toons)}
-        <View style={styles.textContainer}>
-          <Text style={styles.text}>{strings.ALL}</Text>
         </View>
       </View>
     );
@@ -195,6 +205,8 @@ class ForYou extends Component {
         keyExtractor={item => item.id.toString()}
         ListHeaderComponent={this.showHeader(toons)}
         showsVerticalScrollIndicator={false}
+        onRefresh={() => this.handleGetAllToons()}
+        refreshing={false}
       />
     );
   };
@@ -213,7 +225,7 @@ class ForYou extends Component {
     return (
       <SafeAreaView style={styles.container}>
         {this.showSearchBar()}
-        {this.renderSub(toons.toons)}
+        {this.renderSub(toons.data)}
       </SafeAreaView>
     );
   }
@@ -270,10 +282,16 @@ const styles = StyleSheet.create({
   textContainer: {
     marginTop: 20,
     marginHorizontal: 20,
+    borderBottomWidth: 4,
   },
   text: {
     fontFamily: strings.FONT,
     fontSize: 28,
+  },
+  favWarn: {
+    fontFamily: strings.FONT,
+    fontSize: 18,
+    color: colors.SILVER,
   },
   favImageCont: {
     marginTop: 10,
@@ -313,6 +331,7 @@ const styles = StyleSheet.create({
   toonNameCont: {
     flex: 1,
     marginLeft: 10,
+    justifyContent: 'flex-end',
   },
   toonName: {
     fontFamily: strings.FONT,

@@ -5,7 +5,7 @@ import {
 } from '../config/constants';
 
 const initialState = {
-  toons: [],
+  data: [],
   error: null,
   isLoading: true,
 };
@@ -15,12 +15,13 @@ const toons = (state = initialState, action) => {
     case GET_ALL_TOONS_PENDING:
       return {
         ...state,
+        error: null,
         isLoading: action.payload,
       };
     case GET_ALL_TOONS_FULFILLED:
       return {
         ...state,
-        toons: action.payload,
+        data: action.payload,
         isLoading: action.isLoading,
       };
     case GET_ALL_TOONS_REJECTED:
