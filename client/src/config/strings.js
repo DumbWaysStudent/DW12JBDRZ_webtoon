@@ -14,7 +14,7 @@ const strings = {
   TRYAGAIN: 'Try Again',
   MODALMSG: 'Sorry, something went wrong.',
   FONT: 'Rancho-Regular',
-  FAVORITE: 'Favorite',
+  FAVORITES: 'Favorites',
   ALL: 'All',
   FORYOU: 'For You',
   MYFAV: 'My Favorite',
@@ -34,11 +34,17 @@ const strings = {
   NAME: 'Name',
   IMAGES: 'Images',
   ADD_FAVORITE: 'Add to My Favorite',
+  REM_FAVORITE: 'Remove from My Favorite',
   ADD_EPISODE: '+ Episode',
   ADD_IMAGE: '+ Image',
   DELETE: 'Delete',
   SEARCH: 'Search here ..',
   TYPE: 'Type here ..',
+
+  GET: 'GET',
+  POST: 'POST',
+  PUT: 'PUT',
+  DELETE: 'DELETE',
 };
 
 export default strings;

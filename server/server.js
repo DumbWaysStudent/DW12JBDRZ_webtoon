@@ -11,131 +11,117 @@ const port = 5000;
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
-const AuthController = require("./controllers/auth");
-const ToonsController = require("./controllers/toons");
+const authController = require("./controllers/auth");
+const getController = require("./controllers/get");
+const postController = require("./controllers/post");
+const putController = require("./controllers/put");
+const deleteController = require("./controllers/delete");
 
 const { authenticated, authorized } = require("./middleware");
 
 app.group("/api/v1", router => {
-  // Public API
-  // Login
-  router.post("/login", AuthController.login);
-  // Register
-  router.post("/register", AuthController.register);
-  // Get/Search all toons
-  router.get("/webtoons", ToonsController.showAllToons);
-  // Get all episodes of a toon
-  router.get("/webtoon/:webtoon_id/episodes", ToonsController.showToonEps);
-  // Get all pages of an episode
-  router.get(
-    "/webtoon/:webtoon_id/episode/:episode_id",
-    ToonsController.showToonPages
-  );
+  router.post("/login", authController.login);
+  router.post("/register", authController.register);
 
-  // Private API
+  // router.get("/webtoons", getController.showAllToons);
+  // router.get("/webtoon/:webtoon_id/episodes", getController.showToonEps);
+  // router.get(
+  //   "/webtoon/:webtoon_id/episode/:episode_id",
+  //   getController.showToonPages
+  // );
 
-  /**
-   * GET METHODS
-   */
-
-  // Get/Search all toons
   router.get(
     "/user/:user_id/all_webtoons",
     authenticated,
     authorized,
-    ToonsController.showAllToons
+    getController.showAllToons
   );
-  // Get created toons
+  router.get(
+    "/user/:user_id/webtoons/favorites",
+    authenticated,
+    authorized,
+    getController.showUserFavs
+  );
   router.get(
     "/user/:user_id/webtoons",
     authenticated,
     authorized,
-    ToonsController.showCreatedToons
+    getController.showCreatedToons
   );
-  // Get all episodes of a toon
   router.get(
     "/user/:user_id/webtoon/:webtoon_id/episodes",
     authenticated,
     authorized,
-    ToonsController.showEpsToon
+    getController.showEpsToon
   );
-  // Get all images of an episode (for pages)
   router.get(
     "/user/:user_id/webtoon/:webtoon_id/episode/:episode_id/images",
     authenticated,
     authorized,
-    ToonsController.showImgEps
+    getController.showImgEps
   );
 
-  /**
-   * POST METHODS
-   */
-
-  // Post a created toon
+  router.post(
+    "/user/:user_id/webtoon/:webtoon_id/favorite",
+    authenticated,
+    authorized,
+    postController.storeUserFav
+  );
   router.post(
     "/user/:user_id/webtoon",
     authenticated,
     authorized,
-    ToonsController.storeCreatedToon
+    postController.storeCreatedToon
   );
-  // Post an episode of a toon
   router.post(
     "/user/:user_id/webtoon/:webtoon_id/episode",
     authenticated,
     authorized,
-    ToonsController.storeEpsToon
+    postController.storeEpsToon
   );
-  // Post an image of an episode (for pages)
   router.post(
     "/user/:user_id/webtoon/:webtoon_id/episode/:episode_id/image",
     authenticated,
     authorized,
-    ToonsController.storeImgEps
+    postController.storeImgEps
   );
 
-  /**
-   * PUT METHODS
-   */
-
-  // Update my toon
   router.put(
     "/user/:user_id/webtoon/:webtoon_id",
     authenticated,
     authorized,
-    ToonsController.updateMyToon
+    putController.updateMyToon
   );
-  // Update my episode
   router.put(
     "/user/:user_id/webtoon/:webtoon_id/episode/:episode_id",
     authenticated,
     authorized,
-    ToonsController.updateMyEps
+    putController.updateMyEps
   );
 
-  /**
-   * DELETE METHODS
-   */
-
-  // Delete my toon
+  router.delete(
+    "/user/:user_id/webtoon/:webtoon_id/favorite",
+    authenticated,
+    authorized,
+    deleteController.delUserFav
+  );
   router.delete(
     "/user/:user_id/webtoon/:webtoon_id",
     authenticated,
     authorized,
-    ToonsController.deleteMyToon
+    deleteController.deleteMyToon
   );
-  // Delete my episode
   router.delete(
     "/user/:user_id/webtoon/:webtoon_id/episode/:episode_id",
     authenticated,
     authorized,
-    ToonsController.deleteMyEps
+    deleteController.deleteMyEps
   );
-  // Delete an image of an episode (for pages)
   router.delete(
     "/user/:user_id/webtoon/:webtoon_id/episode/:episode_id/image/:image_id",
     authenticated,
     authorized,
-    ToonsController.deleteImgEps
+    deleteController.deleteImgEps
   );
 });
 

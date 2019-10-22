@@ -5,7 +5,7 @@ const User = models.user;
 const Genre = models.genre;
 const Episode = models.episode;
 const Page = models.page;
-// const Favorite = models.favorite;
+const Favorite = models.favorite;
 
 // Get all toons
 const getToons = data => {
@@ -14,7 +14,8 @@ const getToons = data => {
       id: item.id,
       title: item.title,
       genre: item.toonGenre.name,
-      isFavorite: item.isFavorite.length ? true : false,
+      favorites: item.favorites,
+      isFavorite: item.favorites.length ? true : false,
       image: item.image,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
@@ -28,13 +29,13 @@ const getToons = data => {
 // Get all favorite toons
 const getFavToons = data => {
   const input = data.filter(item => {
-    return item.isFavorite.length > 0;
+    return item.favorites.length > 0;
   });
   let newData = input.map(item => {
     let newItem = {
       title: item.title,
       genre: item.toonGenre.name,
-      isFavorite: item.isFavorite.length ? true : false,
+      isFavorite: item.favorites.length ? true : false,
       image: item.image,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt
@@ -53,7 +54,7 @@ const getToonsByTitle = (data, title) => {
     let newItem = {
       title: item.title,
       genre: item.toonGenre.name,
-      isFavorite: item.isFavorite.length ? true : false,
+      isFavorite: item.favorites.length ? true : false,
       image: item.image,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt
@@ -107,7 +108,7 @@ getUpdatedToons = data => {
     id: data.id,
     title: data.title,
     genre: data.toonGenre.name,
-    isFavorite: data.isFavorite.length ? true : false,
+    isFavorite: data.favorites.length ? true : false,
     image: data.image,
     createdAt: data.createdAt,
     updatedAt: data.updatedAt
@@ -130,12 +131,12 @@ exports.showAllToons = (req, res) => {
       },
       {
         model: User,
-        as: "isFavorite"
-        // attributes: ["id"]
-        // through: {
-        //   model: Favorite,
-        //   where: { user_id: 1 } //Example Logged in user
-        // }
+        as: "favorites",
+        attributes: ["id"],
+        through: {
+          model: Favorite,
+          where: { user_id: req.params.user_id }
+        }
       }
     ],
     attributes: { exclude: ["genre", "created_by"] }
@@ -272,7 +273,7 @@ exports.updateMyToon = (req, res) => {
           },
           {
             model: User,
-            as: "isFavorite"
+            as: "favorites"
           }
         ],
         attributes: { exclude: ["genre", "created_by"] },

@@ -13,6 +13,7 @@ import {connect} from 'react-redux';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Carousel from 'react-native-banner-carousel';
+import {MaterialIndicator} from 'react-native-indicators';
 
 import colors from '../../../config/colors';
 import strings from '../../../config/strings';
@@ -20,23 +21,45 @@ import metrics from '../../../config/metrics';
 import {setHeaderAuth} from '../../../config/api';
 import {getAuthKey} from '../../../config/auth';
 import fetchAllToons from '../../../_store/toons';
+import fetchFavorite from '../../../_store/favorites';
 import Error from '../../../components/error';
 import Loading from '../../../components/loading';
+
+import {
+  METHOD_GET,
+  METHOD_POST,
+  METHOD_DELETE,
+} from '../../../config/constants';
 
 class ForYou extends Component {
   componentDidMount() {
     this.handleGetAllToons();
   }
 
-  getAllToons = user_id => {
-    this.props.fetchAllToons(user_id);
-  };
-
   handleGetAllToons = async () => {
     try {
       const user = await getAuthKey();
       setHeaderAuth(user.token);
-      this.getAllToons(user.id);
+      this.props.fetchAllToons(user.id);
+      this.props.fetchFavorite(METHOD_GET, user.id, null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  handlePostFavorite = async toon_id => {
+    try {
+      const user = await getAuthKey();
+      this.props.fetchFavorite(METHOD_POST, user.id, toon_id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  handleDelFavorite = async toon_id => {
+    try {
+      const user = await getAuthKey();
+      this.props.fetchFavorite(METHOD_DELETE, user.id, toon_id);
     } catch (error) {
       console.log(error);
     }
@@ -127,14 +150,13 @@ class ForYou extends Component {
     );
   };
 
-  showFavorites = toons => {
-    const favData = toons.filter(toon => {
-      return toon.isFavorite;
-    });
-    if (favData.length > 0) {
+  showFavorites = favorites => {
+    const {data} = favorites;
+
+    if (data.length > 0) {
       return (
         <FlatList
-          data={favData}
+          data={data}
           renderItem={({item}) => this.showFavItem(item)}
           keyExtractor={item => item.id.toString()}
           horizontal={true}
@@ -149,14 +171,14 @@ class ForYou extends Component {
     );
   };
 
-  showHeader = toons => {
+  showHeader = (toons, favorites) => {
     return (
       <View>
         {this.showBanner(toons)}
         <View style={styles.textContainer}>
-          <Text style={styles.text}>{strings.FAVORITE}</Text>
+          <Text style={styles.text}>{strings.FAVORITES}</Text>
         </View>
-        {this.showFavorites(toons)}
+        {this.showFavorites(favorites)}
         <View style={styles.textContainer}>
           <Text style={styles.text}>{strings.ALL}</Text>
         </View>
@@ -164,12 +186,45 @@ class ForYou extends Component {
     );
   };
 
-  showToon = toon => {
-    const containerStyle = [
-      styles.toonBtn,
-      toon.isFavorite ? styles.toonBtnDisabled : styles.toonBtnEnabled,
-    ];
+  showBtnFav = (toon, favorites) => {
+    const {data} = favorites;
+    const found = data.find(fav => {
+      return fav.id == toon.id;
+    });
 
+    if (found) {
+      return (
+        <TouchableOpacity
+          style={styles.toonBtnRem}
+          onPress={() => this.handleDelFavorite(toon.id)}>
+          <Text style={styles.toonBtnText}>{strings.REM_FAVORITE}</Text>
+        </TouchableOpacity>
+      );
+    }
+    return (
+      <TouchableOpacity
+        style={styles.toonBtnAdd}
+        onPress={() => this.handlePostFavorite(toon.id)}>
+        <Text style={styles.toonBtnText}>{strings.ADD_FAVORITE}</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  showBtnFavToon = (toon, favorites) => {
+    const {toon_id, isLoading, isDelete} = favorites;
+    const btnStyle = isDelete ? styles.toonBtnRemFav : styles.toonBtnAddFav;
+
+    if (isLoading && toon_id == toon.id) {
+      return (
+        <View style={btnStyle}>
+          <MaterialIndicator color={colors.WHITE} size={20} />
+        </View>
+      );
+    }
+    return <View>{this.showBtnFav(toon, favorites)}</View>;
+  };
+
+  showToon = (toon, favorites) => {
     return (
       <View style={styles.showToonCont}>
         <View style={styles.showToon}>
@@ -185,25 +240,21 @@ class ForYou extends Component {
         </View>
         <View style={styles.toonNameCont}>
           <Text style={styles.toonName}>
-            {this.textEllipsis(toon.title, 18)}
+            {this.textEllipsis(toon.title, 27)}
           </Text>
-          <View style={styles.toonBtnCont}>
-            <TouchableOpacity style={containerStyle} onPress={null}>
-              <Text style={styles.toonBtnText}>{strings.ADD_FAVORITE}</Text>
-            </TouchableOpacity>
-          </View>
+          {this.showBtnFavToon(toon, favorites)}
         </View>
       </View>
     );
   };
 
-  renderSub = toons => {
+  renderSub = (toons, favorites) => {
     return (
       <FlatList
         data={toons}
-        renderItem={({item}) => this.showToon(item)}
+        renderItem={({item}) => this.showToon(item, favorites)}
         keyExtractor={item => item.id.toString()}
-        ListHeaderComponent={this.showHeader(toons)}
+        ListHeaderComponent={this.showHeader(toons, favorites)}
         showsVerticalScrollIndicator={false}
         onRefresh={() => this.handleGetAllToons()}
         refreshing={false}
@@ -212,7 +263,7 @@ class ForYou extends Component {
   };
 
   render() {
-    const {toons} = this.props;
+    const {toons, favorites} = this.props;
 
     if (toons.isLoading) return <Loading />;
 
@@ -225,7 +276,7 @@ class ForYou extends Component {
     return (
       <SafeAreaView style={styles.container}>
         {this.showSearchBar()}
-        {this.renderSub(toons.data)}
+        {this.renderSub(toons.data, favorites)}
       </SafeAreaView>
     );
   }
@@ -234,11 +285,13 @@ class ForYou extends Component {
 const mapStateToProps = state => {
   return {
     toons: state.toons,
+    favorites: state.favorites,
   };
 };
 
 const mapDispatchToProps = {
   fetchAllToons,
+  fetchFavorite,
 };
 
 export default connect(
@@ -338,21 +391,33 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginVertical: 10,
   },
-  toonBtnCont: {
-    alignItems: 'flex-start',
+  toonBtnAddFav: {
+    flexDirection: 'row',
+    padding: 10,
+    backgroundColor: colors.DARK_GREEN,
+    borderWidth: 4,
+    borderColor: 'rgba(255,255,255,0.7)',
   },
-  toonBtn: {
+  toonBtnRemFav: {
+    flexDirection: 'row',
+    padding: 10,
+    backgroundColor: colors.TORCH_RED,
+    borderWidth: 4,
+    borderColor: 'rgba(255,255,255,0.7)',
+  },
+  toonBtnAdd: {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.DARK_GREEN,
     borderWidth: 4,
     borderColor: 'rgba(255,255,255,0.7)',
   },
-  toonBtnEnabled: {
-    opacity: 1,
-  },
-  toonBtnDisabled: {
-    opacity: 0.3,
+  toonBtnRem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.TORCH_RED,
+    borderWidth: 4,
+    borderColor: 'rgba(255,255,255,0.7)',
   },
   toonBtnText: {
     fontFamily: strings.FONT,
