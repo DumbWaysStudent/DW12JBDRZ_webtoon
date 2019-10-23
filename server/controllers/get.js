@@ -124,7 +124,34 @@ exports.showUserFavs = (req, res) => {
   });
 };
 
-// Get created toons
+exports.showToonEps = (req, res) => {
+  const { webtoon_id } = req.params;
+
+  Episode.findAll({
+    where: { toon_id: webtoon_id },
+  }).then(data => {
+    res.send(data);
+  });
+};
+
+exports.showToonPages = (req, res) => {
+  const { webtoon_id, episode_id } = req.params;
+
+  Page.findAll({
+    include: [
+      {
+        model: Episode,
+        as: "episodeId",
+        where: { toon_id: webtoon_id, id: episode_id },
+        attributes: []
+      }
+    ],
+    attributes: { exclude: ["episode_id"] }
+  }).then(data => {
+    res.send(data);
+  });
+};
+
 const getCreatedToons = data => {
   const newData = data.map(item => {
     let newItem = {
@@ -140,6 +167,7 @@ const getCreatedToons = data => {
   return newData;
 };
 
+// Get created toons
 exports.showCreatedToons = (req, res) => {
   const { user_id } = req.params;
 
@@ -165,7 +193,8 @@ exports.showCreatedToons = (req, res) => {
   });
 };
 
-exports.showEpsToon = (req, res) => {
+// Get created episodes
+exports.showCreatedEps = (req, res) => {
   const { user_id, webtoon_id } = req.params;
 
   Episode.findAll({
@@ -183,7 +212,8 @@ exports.showEpsToon = (req, res) => {
   });
 };
 
-exports.showImgEps = (req, res) => {
+// Get created pages
+exports.showCreatedImgEps = (req, res) => {
   const { user_id, webtoon_id, episode_id } = req.params;
 
   Page.findAll({

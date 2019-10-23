@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {
+  SafeAreaView,
   View,
   StyleSheet,
   Image,
@@ -7,47 +8,48 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
+import {connect} from 'react-redux';
 
 import colors from '../../../config/colors';
 import strings from '../../../config/strings';
 import metrics from '../../../config/metrics';
 
-export default class MyToonDetail extends Component {
+import fetchEpisodes from '../../../_store/episodes';
+import Error from '../../../components/error';
+import Loading from '../../../components/loading';
+
+class MyToonDetail extends Component {
+  componentDidMount() {
+    const {navigation} = this.props;
+    const toon = navigation.state.params;
+
+    this.handleGetEpisodes(toon.id);
+  }
+
+  handleGetEpisodes = toon_id => {
+    this.props.fetchEpisodes(toon_id);
+  };
+
   showScreen = (screen, params) => {
     return this.props.navigation.navigate(screen, params);
   };
 
-  showEpisodeLists = toon => {
+  showEpisode = episode => {
     return (
-      <View style={styles.toonEpisodeContainer}>
-        <FlatList
-          data={toon.episode}
-          keyExtractor={list => list.index.toString()}
-          renderItem={list => this.showEpisode(list.item)}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-    );
-  };
-
-  showEpisode = item => {
-    return (
-      <View style={styles.episodeContainer}>
-        <View style={styles.listEpisode}>
-          <TouchableOpacity onPress={() => this.showScreen('MyToon', item)}>
+      <View style={styles.showEpsCont}>
+        <View style={styles.showEps}>
+          <TouchableOpacity onPress={() => this.showScreen('MyToon', episode)}>
             <Image
-              style={styles.showEpisode}
+              style={styles.epsImage}
               source={{
-                uri: item.imageURI,
+                uri: episode.image,
               }}
             />
           </TouchableOpacity>
         </View>
-        <View style={styles.epsNameContainer}>
-          <Text style={styles.epsName}>
-            {strings.EPS} {item.index}
-          </Text>
-          <Text style={styles.epsNameDate}>{item.dateAdded}</Text>
+        <View style={styles.epsNameCont}>
+          <Text style={styles.epsName}>{episode.title}</Text>
+          <Text style={styles.epsNameDate}>{episode.createdAt}</Text>
         </View>
       </View>
     );
@@ -55,12 +57,12 @@ export default class MyToonDetail extends Component {
 
   showBanner = toon => {
     return (
-      <View style={styles.toonImgContainer}>
-        <View style={styles.toonImage}>
+      <View style={styles.bannerCont}>
+        <View style={styles.imageCont}>
           <Image
-            style={styles.showToonImg}
+            style={styles.image}
             source={{
-              uri: toon.imageURI,
+              uri: toon.image,
             }}
           />
         </View>
@@ -68,75 +70,93 @@ export default class MyToonDetail extends Component {
     );
   };
 
-  renderSub = () => {
-    const {navigation} = this.props;
-    const toon = navigation.state.params;
-
+  renderSub = (toon, episodes) => {
     return (
-      <View style={styles.detailContainer}>
-        {this.showBanner(toon)}
-        {this.showEpisodeLists(toon)}
-      </View>
+      <FlatList
+        data={episodes}
+        renderItem={({item}) => this.showEpisode(item)}
+        keyExtractor={item => item.id.toString()}
+        ListHeaderComponent={this.showBanner(toon)}
+        showsVerticalScrollIndicator={false}
+        onRefresh={() => this.handleGetEpisodes(toon.id)}
+        refreshing={false}
+      />
     );
   };
 
   render() {
+    const {episodes, navigation} = this.props;
+    const toon = navigation.state.params;
+
+    if (episodes.isLoading) return <Loading />;
+
+    if (episodes.error) {
+      return (
+        <Error
+          message={episodes.error.message}
+          onPress={() => this.handleGetEpisodes(toon.id)}
+        />
+      );
+    }
+
     return (
-      <View style={styles.container}>
-        <View style={styles.content}>{this.renderSub()}</View>
-      </View>
+      <SafeAreaView style={styles.container}>
+        {this.renderSub(toon, episodes.data)}
+      </SafeAreaView>
     );
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    episodes: state.episodes,
+  };
+};
+
+const mapDispatchToProps = {
+  fetchEpisodes,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(MyToonDetail);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.WHITE,
-    alignItems: 'center',
   },
-  content: {
-    flex: 1,
-    width: '103%',
-  },
-  detailContainer: {
-    flex: 1,
-  },
-  toonImgContainer: {
-    flex: 1,
-  },
-  toonImage: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 4,
-  },
-  showToonImg: {
-    width: metrics.DEVICE_WIDTH / 2,
-    height: metrics.DEVICE_HEIGHT / 2,
-    resizeMode: 'contain',
-  },
-  toonEpisodeContainer: {
-    flex: 1,
+  bannerCont: {
     marginTop: 20,
     marginHorizontal: 20,
-  },
-  episodeContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    marginBottom: 10,
-  },
-  listEpisode: {
     borderWidth: 4,
-    marginRight: 10,
+    backgroundColor: colors.BROWN,
   },
-  showEpisode: {
-    width: metrics.DEVICE_WIDTH / 5,
-    height: metrics.DEVICE_HEIGHT / 7,
+  imageCont: {
+    alignItems: 'center',
+  },
+  image: {
+    width: metrics.DEVICE_WIDTH / 1.33,
+    height: metrics.DEVICE_HEIGHT / 2.9,
+  },
+  showEpsCont: {
+    flexDirection: 'row',
+    marginVertical: 10,
+    marginHorizontal: 20,
+  },
+  showEps: {
+    borderWidth: 4,
+    justifyContent: 'center',
+  },
+  epsImage: {
+    width: metrics.DEVICE_WIDTH / 5.4,
+    height: metrics.DEVICE_HEIGHT / 5.95,
     resizeMode: 'contain',
   },
-  epsNameContainer: {
+  epsNameCont: {
     flex: 1,
+    marginLeft: 10,
+    justifyContent: 'flex-end',
   },
   epsName: {
     fontFamily: strings.FONT,

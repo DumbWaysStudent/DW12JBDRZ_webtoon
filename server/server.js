@@ -24,11 +24,11 @@ app.group("/api/v1", router => {
   router.post("/register", authController.register);
 
   // router.get("/webtoons", getController.showAllToons);
-  // router.get("/webtoon/:webtoon_id/episodes", getController.showToonEps);
-  // router.get(
-  //   "/webtoon/:webtoon_id/episode/:episode_id",
-  //   getController.showToonPages
-  // );
+  router.get("/webtoon/:webtoon_id/episodes", getController.showToonEps);
+  router.get(
+    "/webtoon/:webtoon_id/episode/:episode_id",
+    getController.showToonPages
+  );
 
   router.get(
     "/user/:user_id/all_webtoons",
@@ -52,13 +52,13 @@ app.group("/api/v1", router => {
     "/user/:user_id/webtoon/:webtoon_id/episodes",
     authenticated,
     authorized,
-    getController.showEpsToon
+    getController.showCreatedEps
   );
   router.get(
     "/user/:user_id/webtoon/:webtoon_id/episode/:episode_id/images",
     authenticated,
     authorized,
-    getController.showImgEps
+    getController.showCreatedImgEps
   );
 
   router.post(

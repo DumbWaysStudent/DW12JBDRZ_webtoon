@@ -21,7 +21,7 @@ import metrics from '../../../config/metrics';
 import {setHeaderAuth} from '../../../config/api';
 import {getAuthKey} from '../../../config/auth';
 import fetchAllToons from '../../../_store/toons';
-import fetchFavorite from '../../../_store/favorites';
+import fetchFavorites from '../../../_store/favorites';
 import Error from '../../../components/error';
 import Loading from '../../../components/loading';
 
@@ -60,7 +60,7 @@ class ForYou extends Component {
       const user = await getAuthKey();
       setHeaderAuth(user.token);
       this.props.fetchAllToons(user.id, false, null);
-      this.props.fetchFavorite(METHOD_GET, user.id, null);
+      this.props.fetchFavorites(METHOD_GET, user.id, null);
     } catch (error) {
       console.log(error);
     }
@@ -69,7 +69,7 @@ class ForYou extends Component {
   handlePostFavorite = async toon_id => {
     try {
       const user = await getAuthKey();
-      this.props.fetchFavorite(METHOD_POST, user.id, toon_id);
+      this.props.fetchFavorites(METHOD_POST, user.id, toon_id);
     } catch (error) {
       console.log(error);
     }
@@ -78,7 +78,7 @@ class ForYou extends Component {
   handleDelFavorite = async toon_id => {
     try {
       const user = await getAuthKey();
-      this.props.fetchFavorite(METHOD_DELETE, user.id, toon_id);
+      this.props.fetchFavorites(METHOD_DELETE, user.id, toon_id);
     } catch (error) {
       console.log(error);
     }
@@ -322,7 +322,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   fetchAllToons,
-  fetchFavorite,
+  fetchFavorites,
 };
 
 export default connect(

@@ -30,7 +30,6 @@ const strings = {
   CREATE_TOON_PAGE: 'My Toon Kingdom',
   TITLE: 'Title',
   EPISODE: 'Episode',
-  EPS: 'Ep. ',
   NAME: 'Name',
   IMAGES: 'Images',
   ADD_EPISODE: '+ Episode',

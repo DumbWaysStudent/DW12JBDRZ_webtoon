@@ -82,7 +82,7 @@ const ForYouStack = createStackNavigator({
   MyToon: {
     screen: MyToon,
     navigationOptions: ({navigation}) => ({
-      title: 'Ep.' + navigation.getParam('index', '0'),
+      title: navigation.state.params.title,
       headerStyle: {
         backgroundColor: colors.WHITE,
       },

@@ -1,59 +1,92 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, FlatList, Image} from 'react-native';
+import {SafeAreaView, View, StyleSheet, FlatList, Image} from 'react-native';
+import {connect} from 'react-redux';
 
 import colors from '../../../config/colors';
 import metrics from '../../../config/metrics';
 
-export default class MyToon extends Component {
-  showToonLists = toon => {
-    return (
-      <View>
-        <FlatList
-          data={toon.pages}
-          keyExtractor={list => list.index.toString()}
-          renderItem={list => this.showToon(list.item)}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-    );
+import fetchPages from '../../../_store/pages';
+import Error from '../../../components/error';
+import Loading from '../../../components/loading';
+
+class MyToon extends Component {
+  componentDidMount() {
+    const {navigation} = this.props;
+    const episode = navigation.state.params;
+
+    this.handleGetPages(episode.toon_id, episode.id);
+  }
+
+  handleGetPages = (toon_id, episode_id) => {
+    this.props.fetchPages(toon_id, episode_id);
   };
 
-  showToon = item => {
+  showPages = item => {
     return (
       <View>
         <Image
           style={styles.showPages}
           source={{
-            uri: item.imageURI,
+            uri: item.image,
           }}
         />
       </View>
     );
   };
 
-  renderSub = () => {
-    const {navigation} = this.props;
-    const toon = navigation.state.params;
-
-    return <View>{this.showToonLists(toon)}</View>;
+  renderSub = (episode, pages) => {
+    return (
+      <FlatList
+        data={pages}
+        renderItem={({item}) => this.showPages(item)}
+        keyExtractor={item => item.id.toString()}
+        showsVerticalScrollIndicator={false}
+        onRefresh={() => this.handleGetPages(episode.toon_id, episode.id)}
+        refreshing={false}
+      />
+    );
   };
 
   render() {
+    const {pages, navigation} = this.props;
+    const episode = navigation.state.params;
+
+    if (pages.isLoading) return <Loading />;
+
+    if (pages.error) {
+      return (
+        <Error
+          message={pages.error.message}
+          onPress={() => this.handleGetPages(episode.toon_id, episode.id)}
+        />
+      );
+    }
+
     return (
-      <View style={styles.container}>
-        <View style={styles.content}>{this.renderSub()}</View>
-      </View>
+      <SafeAreaView style={styles.container}>
+        {this.renderSub(episode, pages.data)}
+      </SafeAreaView>
     );
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    pages: state.pages,
+  };
+};
+
+const mapDispatchToProps = {
+  fetchPages,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(MyToon);
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: colors.WHITE,
-    alignItems: 'center',
-  },
-  content: {
     flex: 1,
   },
   showPages: {
