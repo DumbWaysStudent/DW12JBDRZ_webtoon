@@ -32,6 +32,25 @@ import {
 } from '../../../config/constants';
 
 class ForYou extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      banners: [
+        {
+          image:
+            'https://prodimage.images-bn.com/pimages/9781421571201_p0_v1_s600x595.jpg',
+        },
+        {
+          image:
+            'https://prodimage.images-bn.com/pimages/9781421571218_p0_v1_s550x406.jpg',
+        },
+        {
+          image:
+            'https://prodimage.images-bn.com/pimages/9781421571973_p0_v1_s550x406.jpg',
+        },
+      ],
+    };
+  }
   componentDidMount() {
     this.handleGetAllToons();
   }
@@ -40,7 +59,7 @@ class ForYou extends Component {
     try {
       const user = await getAuthKey();
       setHeaderAuth(user.token);
-      this.props.fetchAllToons(user.id);
+      this.props.fetchAllToons(user.id, false, null);
       this.props.fetchFavorite(METHOD_GET, user.id, null);
     } catch (error) {
       console.log(error);
@@ -60,6 +79,15 @@ class ForYou extends Component {
     try {
       const user = await getAuthKey();
       this.props.fetchFavorite(METHOD_DELETE, user.id, toon_id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  handleSearchToon = async title => {
+    try {
+      const user = await getAuthKey();
+      this.props.fetchAllToons(user.id, true, title);
     } catch (error) {
       console.log(error);
     }
@@ -93,26 +121,30 @@ class ForYou extends Component {
   showSearchBar = () => {
     return (
       <View style={styles.searchContainer}>
-        <TextInput style={styles.searchBar} placeholder={strings.SEARCH} />
+        <TextInput
+          style={styles.searchBar}
+          placeholder={strings.SEARCH}
+          onChangeText={title => this.handleSearchToon(title)}
+        />
         <Icon style={styles.searchIcon} name="search" size={25} />
       </View>
     );
   };
 
-  showImage = (toon, index) => {
+  showImage = (banner, index) => {
     return (
       <View key={index} style={styles.imageCont}>
         <Image
           style={styles.image}
           source={{
-            uri: toon.image,
+            uri: banner.image,
           }}
         />
       </View>
     );
   };
 
-  showBanner = toons => {
+  showBanner = () => {
     return (
       <View style={styles.bannerCont}>
         <Carousel
@@ -121,7 +153,9 @@ class ForYou extends Component {
           loop
           index={0}
           pageSize={metrics.BANNER}>
-          {toons.map((toon, index) => this.showImage(toon, index))}
+          {this.state.banners.map((banner, index) =>
+            this.showImage(banner, index),
+          )}
         </Carousel>
       </View>
     );
@@ -171,10 +205,10 @@ class ForYou extends Component {
     );
   };
 
-  showHeader = (toons, favorites) => {
+  showHeader = favorites => {
     return (
       <View>
-        {this.showBanner(toons)}
+        {this.showBanner()}
         <View style={styles.textContainer}>
           <Text style={styles.text}>{strings.FAVORITES}</Text>
         </View>
@@ -251,7 +285,7 @@ class ForYou extends Component {
         data={toons}
         renderItem={({item}) => this.showToon(item, favorites)}
         keyExtractor={item => item.id.toString()}
-        ListHeaderComponent={this.showHeader(toons, favorites)}
+        ListHeaderComponent={this.showHeader(favorites)}
         showsVerticalScrollIndicator={false}
         onRefresh={() => this.handleGetAllToons()}
         refreshing={false}
@@ -262,7 +296,7 @@ class ForYou extends Component {
   render() {
     const {toons, favorites} = this.props;
 
-    if (toons.isLoading) return <Loading />;
+    if (toons.isLoading && !toons.title) return <Loading />;
 
     if (toons.error) {
       return (

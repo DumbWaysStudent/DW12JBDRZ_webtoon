@@ -26,38 +26,22 @@ const getToons = data => {
   return newData;
 };
 
-// Get all favorite toons
-const getFavToons = data => {
-  const input = data.filter(item => {
-    return item.favorites.length > 0;
-  });
-  let newData = input.map(item => {
-    let newItem = {
-      title: item.title,
-      genre: item.toonGenre.name,
-      isFavorite: item.favorites.length ? true : false,
-      image: item.image,
-      createdAt: item.createdAt,
-      updatedAt: item.updatedAt
-    };
-    return newItem;
-  });
-  return newData;
-};
-
 // Get all toons by title
 const getToonsByTitle = (data, title) => {
-  const input = data.filter(item => {
+  const search = data.filter(item => {
     return item.title.toUpperCase().includes(title.toUpperCase());
   });
-  let newData = input.map(item => {
+  const newData = search.map(item => {
     let newItem = {
+      id: item.id,
       title: item.title,
       genre: item.toonGenre.name,
+      favorites: item.favorites,
       isFavorite: item.favorites.length ? true : false,
       image: item.image,
       createdAt: item.createdAt,
-      updatedAt: item.updatedAt
+      updatedAt: item.updatedAt,
+      createdBy: item.createdBy.id
     };
     return newItem;
   });
@@ -92,8 +76,7 @@ exports.showAllToons = (req, res) => {
   }).then(data => {
     let newData;
 
-    if (req.query.is_favorite == "true") newData = getFavToons(data);
-    else if (req.query.title) newData = getToonsByTitle(data, req.query.title);
+    if (req.query.title) newData = getToonsByTitle(data, req.query.title);
     else newData = getToons(data);
     res.send(newData);
   });
