@@ -20,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  Favorite.associate = models => {};
+  Favorite.associate = models => {
+    Favorite.belongsTo(models.toon, {
+      as: "toons",
+      foreignKey: "toon_id"
+    });
+  };
   return Favorite;
 };

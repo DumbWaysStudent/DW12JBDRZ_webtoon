@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     Toon.belongsToMany(models.user, {
       through: models.favorite,
-      as: "isFavorite",
+      as: "favorites",
       foreignKey: "toon_id"
     });
   };
