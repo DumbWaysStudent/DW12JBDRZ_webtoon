@@ -194,34 +194,31 @@ class ForYou extends Component {
 
     if (found) {
       return (
-        <TouchableOpacity
-          style={styles.toonBtnRem}
-          onPress={() => this.handleDelFavorite(toon.id)}>
-          <Text style={styles.toonBtnText}>{strings.REM_FAVORITE}</Text>
+        <TouchableOpacity onPress={() => this.handleDelFavorite(toon.id)}>
+          <Icon style={styles.btnToonFav} name="heart" size={28} />
         </TouchableOpacity>
       );
     }
     return (
-      <TouchableOpacity
-        style={styles.toonBtnAdd}
-        onPress={() => this.handlePostFavorite(toon.id)}>
-        <Text style={styles.toonBtnText}>{strings.ADD_FAVORITE}</Text>
+      <TouchableOpacity onPress={() => this.handlePostFavorite(toon.id)}>
+        <Icon style={styles.btnToonFav} name="heart-o" size={28} />
       </TouchableOpacity>
     );
   };
 
   showBtnFavToon = (toon, favorites) => {
-    const {toon_id, isLoading, isDelete} = favorites;
-    const btnStyle = isDelete ? styles.toonBtnRemFav : styles.toonBtnAddFav;
+    const {toon_id, isLoading} = favorites;
 
     if (isLoading && toon_id == toon.id) {
       return (
-        <View style={btnStyle}>
-          <MaterialIndicator color={colors.WHITE} size={20} />
+        <View style={styles.btnShowFav}>
+          <MaterialIndicator color={colors.DARK_GREEN} size={28} />
         </View>
       );
     }
-    return <View>{this.showBtnFav(toon, favorites)}</View>;
+    return (
+      <View style={styles.btnShowFav}>{this.showBtnFav(toon, favorites)}</View>
+    );
   };
 
   showToon = (toon, favorites) => {
@@ -239,10 +236,10 @@ class ForYou extends Component {
           </TouchableOpacity>
         </View>
         <View style={styles.toonNameCont}>
+          {this.showBtnFavToon(toon, favorites)}
           <Text style={styles.toonName}>
             {this.textEllipsis(toon.title, 27)}
           </Text>
-          {this.showBtnFavToon(toon, favorites)}
         </View>
       </View>
     );
@@ -389,40 +386,12 @@ const styles = StyleSheet.create({
   toonName: {
     fontFamily: strings.FONT,
     fontSize: 18,
-    marginVertical: 10,
+    marginTop: 10,
   },
-  toonBtnAddFav: {
-    flexDirection: 'row',
-    padding: 10,
-    backgroundColor: colors.DARK_GREEN,
-    borderWidth: 4,
-    borderColor: 'rgba(255,255,255,0.7)',
+  btnShowFav: {
+    alignItems: 'flex-start',
   },
-  toonBtnRemFav: {
-    flexDirection: 'row',
-    padding: 10,
-    backgroundColor: colors.TORCH_RED,
-    borderWidth: 4,
-    borderColor: 'rgba(255,255,255,0.7)',
-  },
-  toonBtnAdd: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.DARK_GREEN,
-    borderWidth: 4,
-    borderColor: 'rgba(255,255,255,0.7)',
-  },
-  toonBtnRem: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.TORCH_RED,
-    borderWidth: 4,
-    borderColor: 'rgba(255,255,255,0.7)',
-  },
-  toonBtnText: {
-    fontFamily: strings.FONT,
-    color: colors.WHITE,
-    fontSize: 16,
-    padding: 10,
+  btnToonFav: {
+    color: colors.TORCH_RED,
   },
 });

@@ -390,38 +390,65 @@ const AppStack = createBottomTabNavigator(
         const {routeName} = navigation.state;
 
         if (routeName === 'ForYou')
-          return <Icon name="th-large" size={28} color={tintColor} />;
+          return (
+            <Icon
+              name="th-large"
+              size={28}
+              color={focused ? colors.DARK_GREEN : colors.SILVER}
+            />
+          );
         else if (routeName == 'MyFavorite')
-          return <Icon name="star" size={28} color={tintColor} />;
-        else return <Icon name="user" size={28} color={tintColor} />;
+          return (
+            <Icon
+              name="heart"
+              size={28}
+              color={focused ? colors.TORCH_RED : colors.SILVER}
+            />
+          );
+        else
+          return (
+            <Icon
+              name="user"
+              size={28}
+              color={focused ? colors.BLUE : colors.SILVER}
+            />
+          );
       },
       tabBarLabel: ({focused, tintColor}) => {
         const {routeName} = navigation.state;
 
         if (routeName === 'ForYou')
           return (
-            <Text style={[styles.labelStyle, {color: tintColor}]}>
+            <Text
+              style={[
+                styles.labelStyle,
+                {color: focused ? colors.DARK_GREEN : colors.SILVER},
+              ]}>
               {strings.FORYOU}
             </Text>
           );
         else if (routeName == 'MyFavorite')
           return (
-            <Text style={[styles.labelStyle, {color: tintColor}]}>
+            <Text
+              style={[
+                styles.labelStyle,
+                {color: focused ? colors.TORCH_RED : colors.SILVER},
+              ]}>
               {strings.MYFAV}
             </Text>
           );
         else
           return (
-            <Text style={[styles.labelStyle, {color: tintColor}]}>
+            <Text
+              style={[
+                styles.labelStyle,
+                {color: focused ? colors.BLUE : colors.SILVER},
+              ]}>
               {strings.PROFILE}
             </Text>
           );
       },
     }),
-    tabBarOptions: {
-      activeTintColor: colors.DARK_GREEN,
-      inactiveTintColor: colors.SILVER,
-    },
   },
 );
 

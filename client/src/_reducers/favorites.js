@@ -12,10 +12,9 @@ import {
 
 const initialState = {
   data: [],
-  toon_id: null,
   error: null,
+  toon_id: null,
   isLoading: true,
-  isDelete: false,
 };
 
 const favorites = (state = initialState, action) => {
@@ -28,7 +27,6 @@ const favorites = (state = initialState, action) => {
         error: null,
         toon_id: action.toon_id,
         isLoading: action.payload,
-        isDelete: action.type == DEL_FAV_PENDING ? true : false,
       };
     case GET_FAVS_FULFILLED:
     case POST_FAV_FULFILLED:

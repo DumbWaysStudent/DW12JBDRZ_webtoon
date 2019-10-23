@@ -9,6 +9,7 @@ const colors = {
   TORCH_RED: '#F8262F',
   MISCHKA: '#E5E4E6',
   BROWN: '#CECEAA',
+  GOLD: '#CCAC00',
 };
 
 export default colors;
