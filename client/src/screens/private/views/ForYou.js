@@ -296,7 +296,7 @@ class ForYou extends Component {
   render() {
     const {toons, favorites} = this.props;
 
-    if (toons.isLoading && !toons.title) return <Loading />;
+    if (toons.isLoading) return <Loading />;
 
     if (toons.error) {
       return (
