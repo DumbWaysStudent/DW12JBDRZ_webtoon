@@ -8,6 +8,7 @@ import {
   DEL_FAV_PENDING,
   DEL_FAV_FULFILLED,
   DEL_FAV_REJECTED,
+  RESET_FAVS,
 } from '../config/constants';
 
 const initialState = {
@@ -15,6 +16,7 @@ const initialState = {
   error: null,
   toon_id: null,
   isLoading: true,
+  isDelete: false,
 };
 
 const favorites = (state = initialState, action) => {
@@ -27,6 +29,7 @@ const favorites = (state = initialState, action) => {
         error: null,
         toon_id: action.toon_id,
         isLoading: action.payload,
+        isDelete: action.isDelete,
       };
     case GET_FAVS_FULFILLED:
     case POST_FAV_FULFILLED:
@@ -35,6 +38,7 @@ const favorites = (state = initialState, action) => {
         ...state,
         data: action.payload,
         isLoading: action.isLoading,
+        isDelete: action.isDelete,
       };
     case GET_FAVS_REJECTED:
     case POST_FAV_REJECTED:
@@ -43,7 +47,10 @@ const favorites = (state = initialState, action) => {
         ...state,
         error: action.payload,
         isLoading: action.isLoading,
+        isDelete: action.isDelete,
       };
+    case RESET_FAVS:
+      return initialState;
     default:
       return state;
   }

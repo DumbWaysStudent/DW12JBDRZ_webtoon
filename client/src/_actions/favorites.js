@@ -11,6 +11,7 @@ import {
   DEL_FAV_PENDING,
   DEL_FAV_FULFILLED,
   DEL_FAV_REJECTED,
+  RESET_FAVS,
 } from '../config/constants';
 
 export const fetchData = (method, webtoon_id, bool) => {
@@ -31,6 +32,7 @@ export const fetchData = (method, webtoon_id, bool) => {
     type: methodType,
     payload: bool,
     toon_id: webtoon_id,
+    isDelete: methodType == DEL_FAV_PENDING ? true : false,
   };
 };
 
@@ -52,6 +54,7 @@ export const fetchDataFulfilled = (method, data) => {
     type: methodType,
     payload: data,
     isLoading: false,
+    isDelete: false,
   };
 };
 
@@ -73,5 +76,12 @@ export const fetchDataRejected = (method, error) => {
     type: methodType,
     payload: error,
     isLoading: false,
+    isDelete: false,
+  };
+};
+
+export const resetFavs = () => {
+  return {
+    type: RESET_FAVS,
   };
 };

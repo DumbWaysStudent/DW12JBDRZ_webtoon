@@ -1,37 +1,38 @@
 import React, {Component} from 'react';
 import {
+  SafeAreaView,
   StyleSheet,
   View,
-  ScrollView,
+  FlatList,
   TextInput,
   Image,
   Text,
 } from 'react-native';
+import {connect} from 'react-redux';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import colors from '../../../config/colors';
 import strings from '../../../config/strings';
 import metrics from '../../../config/metrics';
+import {getAuthKey} from '../../../config/auth';
+import fetchFavorites from '../../../_store/favorites';
+import fetchAllToons from '../../../_store/toons';
+import Error from '../../../components/error';
+import Loading from '../../../components/loading';
 
-export default class MyFavorite extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      toons: [
-        {
-          title: 'Playing Yugi',
-          imageURI: strings.IMAGE1_URL,
-          count: 100,
-        },
-        {
-          title: 'Jonouchi',
-          imageURI: strings.IMAGE3_URL,
-          count: 80,
-        },
-      ],
-    };
-  }
+import {METHOD_GET} from '../../../config/constants';
+
+class MyFavorite extends Component {
+  handleGetUserFavs = async () => {
+    try {
+      const user = await getAuthKey();
+      this.props.fetchFavorites(METHOD_GET, user.id, null);
+      this.props.fetchAllToons(user.id, false, null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   showSearchBar = () => {
     return (
@@ -47,70 +48,98 @@ export default class MyFavorite extends Component {
     );
   };
 
-  showListFav = (toon, index) => {
+  showUserFavs = (favorite, toons) => {
+    const found = toons.find(toon => {
+      return toon.id == favorite.id;
+    });
+
     return (
-      <View key={index} style={styles.showListContainer}>
-        <View style={styles.listImage}>
+      <View style={styles.showUserFavsCont}>
+        <View style={styles.showUserFavs}>
           <Image
-            style={styles.showListImage}
+            style={styles.favImage}
             source={{
-              uri: toon.imageURI,
+              uri: favorite.image,
             }}
           />
         </View>
-        <View style={styles.listNameContainer}>
-          <Text style={styles.listName}>{toon.title}</Text>
-          <Text style={styles.epsNameDate}>
-            {toon.count}
-            {strings.ADD_FAVORITE}
-          </Text>
+        <View style={styles.favNameCont}>
+          <Text style={styles.favName}>{favorite.title}</Text>
+          <View style={styles.favCountCont}>
+            <Icon style={styles.favCount} name="heart" size={18} />
+            <Text style={styles.favCountTxt}>
+              {found ? found.favorites.length : 0}
+              {strings.LIKE}
+            </Text>
+          </View>
         </View>
       </View>
     );
   };
 
-  showListFavWindow = toons => {
+  renderSub = (favorites, toons) => {
     return (
-      <View style={styles.listsContainer}>
-        {toons.map((toon, index) => this.showListFav(toon, index))}
-      </View>
-    );
-  };
-
-  renderSub = () => {
-    const {toons} = this.state;
-    return (
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {this.showSearchBar()}
-        {this.showListFavWindow(toons)}
-      </ScrollView>
+      <FlatList
+        data={favorites}
+        renderItem={({item}) => this.showUserFavs(item, toons)}
+        keyExtractor={item => item.id.toString()}
+        showsVerticalScrollIndicator={false}
+        onRefresh={() => this.handleGetUserFavs()}
+        refreshing={false}
+      />
     );
   };
 
   render() {
+    const {favorites, toons} = this.props;
+
+    if (favorites.error) {
+      return (
+        <Error
+          message={favorites.error.message}
+          onPress={this.handleGetUserFavs}
+        />
+      );
+    }
+
+    if (favorites.isLoading) return <Loading />;
+
     return (
-      <View style={styles.container}>
-        <View style={styles.content}>{this.renderSub()}</View>
-      </View>
+      <SafeAreaView style={styles.container}>
+        {this.showSearchBar()}
+        {this.renderSub(favorites.data, toons.data)}
+      </SafeAreaView>
     );
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    favorites: state.favorites,
+    toons: state.toons,
+  };
+};
+
+const mapDispatchToProps = {
+  fetchFavorites,
+  fetchAllToons,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(MyFavorite);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.WHITE,
-    alignItems: 'center',
-  },
-  content: {
-    flex: 1,
-    width: '85%',
   },
   searchContainer: {
-    flex: 1,
     flexDirection: 'row',
     borderWidth: 4,
     marginTop: 10,
+    marginHorizontal: 20,
+    alignItems: 'center',
   },
   searchBar: {
     flex: 1,
@@ -122,35 +151,41 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginRight: 10,
   },
-  listsContainer: {
-    flex: 1,
-    marginTop: 20,
-  },
-  showListContainer: {
-    flex: 1,
+  showUserFavsCont: {
     flexDirection: 'row',
-    marginBottom: 10,
+    marginVertical: 10,
+    marginHorizontal: 20,
   },
-  listImage: {
+  showUserFavs: {
     borderWidth: 4,
-    marginRight: 10,
+    justifyContent: 'center',
   },
-  showListImage: {
+  favImage: {
     width: metrics.DEVICE_WIDTH / 5,
-    height: metrics.DEVICE_HEIGHT / 7,
+    height: metrics.DEVICE_HEIGHT / 5.9,
     resizeMode: 'contain',
   },
-  listNameContainer: {
+  favNameCont: {
     flex: 1,
+    marginLeft: 10,
+    justifyContent: 'flex-end',
   },
-  listName: {
+  favName: {
     fontFamily: strings.FONT,
     fontSize: 18,
-    marginTop: 10,
   },
-  epsNameDate: {
+  favCountCont: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+  },
+  favCount: {
+    color: colors.TORCH_RED,
+    marginRight: 10,
+  },
+  favCountTxt: {
     fontFamily: strings.FONT,
     fontSize: 18,
     opacity: 0.3,
+    marginBottom: -3,
   },
 });

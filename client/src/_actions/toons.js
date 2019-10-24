@@ -2,6 +2,7 @@ import {
   GET_ALL_TOONS_PENDING,
   GET_ALL_TOONS_FULFILLED,
   GET_ALL_TOONS_REJECTED,
+  RESET_ALL_TOONS,
 } from '../config/constants';
 
 export const fetchData = bool => {
@@ -11,11 +12,12 @@ export const fetchData = bool => {
   };
 };
 
-export const fetchDataFulfilled = data => {
+export const fetchDataFulfilled = (data, title) => {
   return {
     type: GET_ALL_TOONS_FULFILLED,
     payload: data,
     isLoading: false,
+    title,
   };
 };
 
@@ -24,5 +26,11 @@ export const fetchDataRejected = error => {
     type: GET_ALL_TOONS_REJECTED,
     payload: error,
     isLoading: false,
+  };
+};
+
+export const resetAllToons = () => {
+  return {
+    type: RESET_ALL_TOONS,
   };
 };

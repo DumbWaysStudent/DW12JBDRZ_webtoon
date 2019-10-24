@@ -2,6 +2,7 @@ import {
   GET_PAGES_PENDING,
   GET_PAGES_FULFILLED,
   GET_PAGES_REJECTED,
+  RESET_PAGES,
 } from '../config/constants';
 
 const initialState = {
@@ -30,6 +31,8 @@ const pages = (state = initialState, action) => {
         error: action.payload,
         isLoading: action.isLoading,
       };
+    case RESET_PAGES:
+      return initialState;
     default:
       return state;
   }

@@ -2,6 +2,7 @@ import {
   GET_PAGES_PENDING,
   GET_PAGES_FULFILLED,
   GET_PAGES_REJECTED,
+  RESET_PAGES,
 } from '../config/constants';
 
 export const fetchData = bool => {
@@ -24,5 +25,11 @@ export const fetchDataRejected = error => {
     type: GET_PAGES_REJECTED,
     payload: error,
     isLoading: false,
+  };
+};
+
+export const resetPages = () => {
+  return {
+    type: RESET_PAGES,
   };
 };

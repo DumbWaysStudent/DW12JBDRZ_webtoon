@@ -10,7 +10,7 @@ const episodes = webtoon_id => {
     dispatch(fetchData(true));
     API.get(`/webtoon/${webtoon_id}/episodes`)
       .then(res => {
-        dispatch(fetchDataFulfilled(res.data));
+        dispatch(fetchDataFulfilled(res.data, webtoon_id));
       })
       .catch(error => {
         dispatch(fetchDataRejected(error));

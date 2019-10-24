@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 export const API = axios.create({
-  baseURL: 'http://192.168.1.17:5000/api/v1',
+  baseURL: 'https://toonkingdom.herokuapp.com/api/v1',
+  timeout: 10000,
 });
 
 export const setHeaderAuth = token => {

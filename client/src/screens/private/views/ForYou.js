@@ -20,8 +20,10 @@ import strings from '../../../config/strings';
 import metrics from '../../../config/metrics';
 import {setHeaderAuth} from '../../../config/api';
 import {getAuthKey} from '../../../config/auth';
+import {textEllipsis} from '../../../config/utils';
 import fetchAllToons from '../../../_store/toons';
 import fetchFavorites from '../../../_store/favorites';
+import resetAllData from '../../../_store/reset';
 import Error from '../../../components/error';
 import Loading from '../../../components/loading';
 
@@ -51,7 +53,9 @@ class ForYou extends Component {
       ],
     };
   }
+
   componentDidMount() {
+    this.props.resetAllData();
     this.handleGetAllToons();
   }
 
@@ -95,27 +99,6 @@ class ForYou extends Component {
 
   showScreen = (screen, params) => {
     return this.props.navigation.navigate(screen, params);
-  };
-
-  /**
-   * const text = textEllipsis('a very long text', 10);
-   * "a very ..."
-   * const text = textEllipsis('a very long text', 10, { side: 'start' });
-   * "...ng text"
-   * const text = textEllipsis('a very long text', 10, { textEllipsis: ' END' });
-   * "a very END"
-   */
-  textEllipsis = (str, maxLength, {side = 'end', ellipsis = '...'} = {}) => {
-    if (str.length > maxLength) {
-      switch (side) {
-        case 'start':
-          return ellipsis + str.slice(-(maxLength - ellipsis.length));
-        case 'end':
-        default:
-          return str.slice(0, maxLength - ellipsis.length) + ellipsis;
-      }
-    }
-    return str;
   };
 
   showSearchBar = () => {
@@ -176,9 +159,7 @@ class ForYou extends Component {
           </TouchableOpacity>
         </View>
         <View style={styles.favNameContainer}>
-          <Text style={styles.favName}>
-            {this.textEllipsis(toon.title, 18)}
-          </Text>
+          <Text style={styles.favName}>{textEllipsis(toon.title, 18)}</Text>
         </View>
       </View>
     );
@@ -271,9 +252,7 @@ class ForYou extends Component {
         </View>
         <View style={styles.toonNameCont}>
           {this.showBtnFavToon(toon, favorites)}
-          <Text style={styles.toonName}>
-            {this.textEllipsis(toon.title, 27)}
-          </Text>
+          <Text style={styles.toonName}>{textEllipsis(toon.title, 27)}</Text>
         </View>
       </View>
     );
@@ -282,10 +261,10 @@ class ForYou extends Component {
   renderSub = (toons, favorites) => {
     return (
       <FlatList
-        data={toons}
+        data={toons.data}
         renderItem={({item}) => this.showToon(item, favorites)}
         keyExtractor={item => item.id.toString()}
-        ListHeaderComponent={this.showHeader(favorites)}
+        ListHeaderComponent={toons.title ? null : this.showHeader(favorites)}
         showsVerticalScrollIndicator={false}
         onRefresh={() => this.handleGetAllToons()}
         refreshing={false}
@@ -296,18 +275,18 @@ class ForYou extends Component {
   render() {
     const {toons, favorites} = this.props;
 
-    if (toons.isLoading) return <Loading />;
-
     if (toons.error) {
       return (
         <Error message={toons.error.message} onPress={this.handleGetAllToons} />
       );
     }
 
+    if (toons.isLoading && !favorites.isDelete) return <Loading />;
+
     return (
       <SafeAreaView style={styles.container}>
         {this.showSearchBar()}
-        {this.renderSub(toons.data, favorites)}
+        {this.renderSub(toons, favorites)}
       </SafeAreaView>
     );
   }
@@ -323,6 +302,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   fetchAllToons,
   fetchFavorites,
+  resetAllData,
 };
 
 export default connect(
@@ -420,7 +400,6 @@ const styles = StyleSheet.create({
   toonName: {
     fontFamily: strings.FONT,
     fontSize: 18,
-    marginTop: 10,
   },
   btnShowFav: {
     alignItems: 'flex-start',

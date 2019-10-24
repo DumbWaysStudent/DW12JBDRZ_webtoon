@@ -37,6 +37,7 @@ const strings = {
   DELETE: 'Delete',
   SEARCH: 'Search here ..',
   TYPE: 'Type here ..',
+  LIKE: ' Favorite(s)',
 };
 
 export default strings;

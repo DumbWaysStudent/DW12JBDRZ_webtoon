@@ -12,8 +12,12 @@ export default class LoadingScreen extends Component {
   }
 
   checkAuthorized = async () => {
-    const hasKey = await getAuthKey();
-    this.props.navigation.navigate(hasKey ? 'App' : 'Auth');
+    try {
+      const hasKey = await getAuthKey();
+      this.props.navigation.navigate(hasKey ? 'App' : 'Auth');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   render() {

@@ -12,3 +12,28 @@ export const checkSecurePass = isSecure => {
 
   return data;
 };
+
+/**
+ * const text = textEllipsis('a very long text', 10);
+ * "a very ..."
+ * const text = textEllipsis('a very long text', 10, { side: 'start' });
+ * "...ng text"
+ * const text = textEllipsis('a very long text', 10, { textEllipsis: ' END' });
+ * "a very END"
+ */
+export const textEllipsis = (
+  str,
+  maxLength,
+  {side = 'end', ellipsis = '...'} = {},
+) => {
+  if (str.length > maxLength) {
+    switch (side) {
+      case 'start':
+        return ellipsis + str.slice(-(maxLength - ellipsis.length));
+      case 'end':
+      default:
+        return str.slice(0, maxLength - ellipsis.length) + ellipsis;
+    }
+  }
+  return str;
+};

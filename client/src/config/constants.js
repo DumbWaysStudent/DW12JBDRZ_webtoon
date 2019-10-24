@@ -32,3 +32,9 @@ export const POST_FAV_REJECTED = 'POST_FAV_REJECTED';
 export const DEL_FAV_PENDING = 'DEL_FAV_PENDING';
 export const DEL_FAV_FULFILLED = 'DEL_FAV_FULFILLED';
 export const DEL_FAV_REJECTED = 'DEL_FAV_REJECTED';
+
+// Reset
+export const RESET_ALL_TOONS = 'RESET_ALL_TOONS';
+export const RESET_FAVS = 'RESET_FAVS';
+export const RESET_EPS = 'RESET_EPS';
+export const RESET_PAGES = 'RESET_PAGES';

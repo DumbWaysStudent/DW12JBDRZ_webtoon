@@ -1,5 +1,6 @@
 import {createStore, combineReducers, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
+// import logger from 'redux-logger';
 
 import toons from '../_reducers/toons';
 import favorites from '../_reducers/favorites';

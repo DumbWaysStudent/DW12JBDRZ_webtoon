@@ -49,6 +49,8 @@ const getToonsByTitle = (data, title) => {
 };
 
 exports.showAllToons = (req, res) => {
+  //const {user_id} = req.params;
+
   Toon.findAll({
     include: [
       {
@@ -67,11 +69,12 @@ exports.showAllToons = (req, res) => {
         attributes: ["id"],
         through: {
           model: Favorite,
-          where: { user_id: req.params.user_id },
+          // where: { user_id },
           attributes: ["toon_id"]
         }
       }
     ],
+    order: [["id", "ASC"]],
     attributes: { exclude: ["genre", "created_by"] }
   }).then(data => {
     let newData;
@@ -117,8 +120,9 @@ exports.showUserFavs = (req, res) => {
         ]
       }
     ],
-    attributes: [],
-    where: { user_id }
+    where: { user_id },
+    order: [["id", "ASC"]],
+    attributes: []
   }).then(data => {
     res.send(getUserFavs(data));
   });
@@ -129,6 +133,7 @@ exports.showToonEps = (req, res) => {
 
   Episode.findAll({
     where: { toon_id: webtoon_id },
+    order: [["id", "ASC"]]
   }).then(data => {
     res.send(data);
   });
@@ -146,6 +151,7 @@ exports.showToonPages = (req, res) => {
         attributes: []
       }
     ],
+    order: [["id", "ASC"]],
     attributes: { exclude: ["episode_id"] }
   }).then(data => {
     res.send(data);
@@ -184,10 +190,9 @@ exports.showCreatedToons = (req, res) => {
         attributes: ["id"]
       }
     ],
-    attributes: { exclude: ["genre", "created_by"] },
-    where: {
-      created_by: user_id
-    }
+    where: { created_by: user_id },
+    order: [["id", "ASC"]],
+    attributes: { exclude: ["genre", "created_by"] }
   }).then(data => {
     res.send(getCreatedToons(data));
   });
@@ -206,6 +211,7 @@ exports.showCreatedEps = (req, res) => {
         attributes: []
       }
     ],
+    order: [["id", "ASC"]],
     attributes: { exclude: ["id", "toon_id"] }
   }).then(data => {
     res.send(data);
@@ -233,6 +239,7 @@ exports.showCreatedImgEps = (req, res) => {
         ]
       }
     ],
+    order: [["id", "ASC"]],
     attributes: ["image"]
   }).then(data => {
     res.send(data);

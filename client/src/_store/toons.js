@@ -11,7 +11,7 @@ const toons = (user_id, isSearch, title) => {
       dispatch(fetchData(false));
       API.get(`/user/${user_id}/all_webtoons?title=${title}`)
         .then(res => {
-          dispatch(fetchDataFulfilled(res.data));
+          dispatch(fetchDataFulfilled(res.data, title));
         })
         .catch(error => {
           dispatch(fetchDataRejected(error));
@@ -20,7 +20,7 @@ const toons = (user_id, isSearch, title) => {
       dispatch(fetchData(true));
       API.get(`/user/${user_id}/all_webtoons`)
         .then(res => {
-          dispatch(fetchDataFulfilled(res.data));
+          dispatch(fetchDataFulfilled(res.data, title));
         })
         .catch(error => {
           dispatch(fetchDataRejected(error));

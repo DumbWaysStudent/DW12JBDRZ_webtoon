@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Text, View, TouchableOpacity, StyleSheet, Image} from 'react-native';
+import {connect} from 'react-redux';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -7,8 +8,9 @@ import colors from '../../../config/colors';
 import strings from '../../../config/strings';
 import metrics from '../../../config/metrics';
 import {removeAuthKey} from '../../../config/auth';
+import resetAllData from '../../../_store/reset';
 
-export default class MyProfile extends Component {
+class MyProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -56,8 +58,13 @@ export default class MyProfile extends Component {
   };
 
   handleLogout = async () => {
-    await removeAuthKey();
-    this.props.navigation.navigate('Auth');
+    try {
+      await removeAuthKey();
+      this.props.resetAllData();
+      this.props.navigation.navigate('Auth');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   showProfileMenu = () => {
@@ -99,6 +106,15 @@ export default class MyProfile extends Component {
     );
   }
 }
+
+const mapDispatchToProps = {
+  resetAllData,
+};
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(MyProfile);
 
 const styles = StyleSheet.create({
   container: {

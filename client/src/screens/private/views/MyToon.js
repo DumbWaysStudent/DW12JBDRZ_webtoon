@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {SafeAreaView, View, StyleSheet, FlatList, Image} from 'react-native';
 import {connect} from 'react-redux';
 
-import colors from '../../../config/colors';
 import metrics from '../../../config/metrics';
 
 import fetchPages from '../../../_store/pages';
@@ -51,8 +50,6 @@ class MyToon extends Component {
     const {pages, navigation} = this.props;
     const episode = navigation.state.params;
 
-    if (pages.isLoading) return <Loading />;
-
     if (pages.error) {
       return (
         <Error
@@ -61,6 +58,8 @@ class MyToon extends Component {
         />
       );
     }
+
+    if (pages.isLoading) return <Loading />;
 
     return (
       <SafeAreaView style={styles.container}>

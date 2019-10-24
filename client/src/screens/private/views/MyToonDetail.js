@@ -20,10 +20,10 @@ import Loading from '../../../components/loading';
 
 class MyToonDetail extends Component {
   componentDidMount() {
-    const {navigation} = this.props;
+    const {episodes, navigation} = this.props;
     const toon = navigation.state.params;
 
-    this.handleGetEpisodes(toon.id);
+    if (episodes.toon_id != toon.id) this.handleGetEpisodes(toon.id);
   }
 
   handleGetEpisodes = toon_id => {
@@ -88,8 +88,6 @@ class MyToonDetail extends Component {
     const {episodes, navigation} = this.props;
     const toon = navigation.state.params;
 
-    if (episodes.isLoading) return <Loading />;
-
     if (episodes.error) {
       return (
         <Error
@@ -98,6 +96,8 @@ class MyToonDetail extends Component {
         />
       );
     }
+
+    if (episodes.isLoading || episodes.toon_id != toon.id) return <Loading />;
 
     return (
       <SafeAreaView style={styles.container}>
