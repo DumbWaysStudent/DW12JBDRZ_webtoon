@@ -37,3 +37,14 @@ export const textEllipsis = (
   }
   return str;
 };
+
+export const getDateStr = dateStr => {
+  const dt = new Date(dateStr);
+  const date =
+    dt.getDate() +
+    ' ' +
+    dt.toDateString().substring(4, 7) +
+    ' ' +
+    dt.getFullYear();
+  return date;
+};

@@ -53,7 +53,7 @@ class MyToon extends Component {
     if (pages.error) {
       return (
         <Error
-          message={pages.error.message}
+          message={pages.error}
           onPress={() => this.handleGetPages(episode.toon_id, episode.id)}
         />
       );

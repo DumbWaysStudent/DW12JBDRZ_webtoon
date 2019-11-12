@@ -32,11 +32,13 @@ export default class FormTextInput extends Component {
 const styles = StyleSheet.create({
   container: {
     marginBottom: 12,
+    minHeight: 45,
+    maxHeight: 45,
   },
   textInput: {
     borderColor: colors.SILVER,
     borderBottomWidth: 3,
-    fontFamily: strings.FONT,
-    fontSize: 24,
+    fontFamily: strings.FONT_SEMIBOLD,
+    fontSize: 16,
   },
 });

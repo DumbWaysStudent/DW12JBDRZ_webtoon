@@ -23,7 +23,15 @@ const toons = (user_id, isSearch, title) => {
           dispatch(fetchDataFulfilled(res.data, title));
         })
         .catch(error => {
-          dispatch(fetchDataRejected(error));
+          if (error.response) {
+            const {data, status} = error.response;
+
+            if (status > 399) {
+              dispatch(fetchDataRejected(data.message));
+            }
+          } else {
+            dispatch(fetchDataRejected(error.message));
+          }
         });
     }
   };

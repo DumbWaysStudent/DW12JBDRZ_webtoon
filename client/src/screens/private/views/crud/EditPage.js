@@ -5,36 +5,19 @@ import {
   View,
   TextInput,
   Image,
+  ScrollView,
   TouchableOpacity,
 } from 'react-native';
 
-import colors from '../../../config/colors';
-import strings from '../../../config/strings';
-import metrics from '../../../config/metrics';
+import colors from '../../../../config/colors';
+import strings from '../../../../config/strings';
+import metrics from '../../../../config/metrics';
 
-export default class CreateMyToon extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      episode: [
-        {
-          index: 1,
-          imageURI: strings.IMAGE1_URL,
-          dateAdded: '1 Desember 2018',
-        },
-        {
-          index: 2,
-          imageURI: strings.IMAGE2_URL,
-          dateAdded: '15 Desember 2018',
-        },
-      ],
-    };
-  }
-
-  showTitleBar = () => {
+export default class EditMyToon extends Component {
+  showTitleBar = episode => {
     return (
       <View style={styles.titleContainer}>
-        <TextInput style={styles.titleBar} placeholder={strings.TYPE} />
+        <TextInput style={styles.titleBar} value={episode.title} />
       </View>
     );
   };
@@ -43,12 +26,15 @@ export default class CreateMyToon extends Component {
     return (
       <View key={index} style={styles.showListContainer}>
         <View style={styles.listImage}>
-          <Image
-            style={styles.showListImage}
-            source={{
-              uri: ep.imageURI,
-            }}
-          />
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('EditEpsToon', ep)}>
+            <Image
+              style={styles.showListImage}
+              source={{
+                uri: ep.imageURI,
+              }}
+            />
+          </TouchableOpacity>
         </View>
         <View style={styles.listNameContainer}>
           <Text style={styles.listName}>
@@ -64,27 +50,28 @@ export default class CreateMyToon extends Component {
   showListTitle = episode => {
     return (
       <View style={styles.listsContainer}>
-        {episode.map((ep, index) => this.showListToon(ep, index))}
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {episode.map((ep, index) => this.showListToon(ep, index))}
+        </ScrollView>
       </View>
     );
   };
 
   renderSub = () => {
-    const {episode} = this.state;
+    const {params} = this.props.navigation.state;
 
     return (
       <View style={styles.createToonContainer}>
         <Text style={styles.titleText}>{strings.TITLE}</Text>
-        {this.showTitleBar()}
+        {this.showTitleBar(params)}
         <Text style={styles.titleText}>{strings.EPISODE}</Text>
-        {this.showListTitle(episode)}
-        <View style={styles.addEpsBtnContainer}>
-          <TouchableOpacity
-            style={styles.addEpsBtn}
-            onPress={() => {
-              this.props.navigation.navigate('CreateEpsToon');
-            }}>
-            <Text style={styles.addEpsBtnText}>{strings.ADD_EPISODE}</Text>
+        {this.showListTitle(params.episode)}
+        <View style={styles.EpsBtnContainer}>
+          <TouchableOpacity style={styles.addEpsBtn} onPress={() => {}}>
+            <Text style={styles.EpsBtnText}>{strings.ADD_EPISODE}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.delEpsBtn} onPress={() => {}}>
+            <Text style={styles.EpsBtnText}>{strings.DELETE}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -157,7 +144,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     opacity: 0.3,
   },
-  addEpsBtnContainer: {
+  EpsBtnContainer: {
     flex: 1,
     justifyContent: 'center',
   },
@@ -167,11 +154,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.DARK_GREEN,
     borderWidth: 4,
     borderColor: 'rgba(255,255,255,0.7)',
+    marginBottom: 10,
   },
-  addEpsBtnText: {
+  EpsBtnText: {
     fontFamily: strings.FONT,
     color: colors.WHITE,
     fontSize: 25,
     padding: 10,
+  },
+  delEpsBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.TORCH_RED,
+    borderWidth: 4,
+    borderColor: 'rgba(255,255,255,0.7)',
   },
 });

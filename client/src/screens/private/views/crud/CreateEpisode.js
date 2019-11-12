@@ -9,69 +9,84 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import colors from '../../../config/colors';
-import strings from '../../../config/strings';
-import metrics from '../../../config/metrics';
+import colors from '../../../../config/colors';
+import strings from '../../../../config/strings';
+import metrics from '../../../../config/metrics';
 
-export default class EditMyToon extends Component {
-  showTitleBar = episode => {
+export default class CreateEpisode extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      episode: [
+        {
+          page: 1,
+          name: 'cover.png',
+          imageURI: strings.IMAGE1_URL,
+        },
+        {
+          page: 2,
+          name: 'introduction.png',
+          imageURI: strings.IMAGE3_URL,
+        },
+      ],
+    };
+  }
+
+  showTitleBar = () => {
     return (
       <View style={styles.titleContainer}>
-        <TextInput style={styles.titleBar} value={episode.title} />
+        <TextInput style={styles.titleBar} />
       </View>
     );
   };
 
-  showListToon = (ep, index) => {
+  showListToon = (toon, index) => {
     return (
       <View key={index} style={styles.showListContainer}>
         <View style={styles.listImage}>
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('EditEpsToon', ep)}>
-            <Image
-              style={styles.showListImage}
-              source={{
-                uri: ep.imageURI,
-              }}
-            />
-          </TouchableOpacity>
+          <Image
+            style={styles.showListImage}
+            source={{
+              uri: toon.imageURI,
+            }}
+          />
         </View>
         <View style={styles.listNameContainer}>
           <Text style={styles.listName}>
-            {strings.EPS}
-            {ep.index}
+            {toon.page}. {toon.name}
           </Text>
-          <Text style={styles.epsNameDate}>{ep.dateAdded}</Text>
+          <View style={styles.delImgBtnContainer}>
+            <TouchableOpacity style={styles.delImgBtn}>
+              <Text style={styles.delImgBtnText}>{strings.DELETE}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
   };
 
-  showListTitle = episode => {
+  showListTitle = eps => {
     return (
       <View style={styles.listsContainer}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {episode.map((ep, index) => this.showListToon(ep, index))}
-        </ScrollView>
+        {eps.map((ep, index) => this.showListToon(ep, index))}
       </View>
     );
   };
 
   renderSub = () => {
-    const {params} = this.props.navigation.state;
+    const {episode} = this.state;
 
     return (
       <View style={styles.createToonContainer}>
-        <Text style={styles.titleText}>{strings.TITLE}</Text>
-        {this.showTitleBar(params)}
-        <Text style={styles.titleText}>{strings.EPISODE}</Text>
-        {this.showListTitle(params.episode)}
-        <View style={styles.EpsBtnContainer}>
-          <TouchableOpacity style={styles.addEpsBtn} onPress={() => {}}>
-            <Text style={styles.EpsBtnText}>{strings.ADD_EPISODE}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.delEpsBtn} onPress={() => {}}>
-            <Text style={styles.EpsBtnText}>{strings.DELETE}</Text>
+        <Text style={styles.titleText}>{strings.NAME}</Text>
+        {this.showTitleBar()}
+        <Text style={styles.titleText}>{strings.IMAGES}</Text>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {this.showListTitle(episode)}
+        </ScrollView>
+        <View style={styles.addEpsBtnContainer}>
+          <TouchableOpacity style={styles.addEpsBtn}>
+            <Text style={styles.addEpsBtnText}>{strings.ADD_IMAGE}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -116,7 +131,7 @@ const styles = StyleSheet.create({
   },
   listsContainer: {
     flex: 1,
-    marginTop: 15,
+    marginTop: 10,
   },
   showListContainer: {
     flexDirection: 'row',
@@ -136,17 +151,12 @@ const styles = StyleSheet.create({
   },
   listName: {
     fontFamily: strings.FONT,
-    fontSize: 18,
-    marginTop: 10,
+    fontSize: 20,
   },
-  epsNameDate: {
-    fontFamily: strings.FONT,
-    fontSize: 18,
-    opacity: 0.3,
-  },
-  EpsBtnContainer: {
+  addEpsBtnContainer: {
     flex: 1,
     justifyContent: 'center',
+    marginBottom: 50,
   },
   addEpsBtn: {
     alignItems: 'center',
@@ -154,19 +164,28 @@ const styles = StyleSheet.create({
     backgroundColor: colors.DARK_GREEN,
     borderWidth: 4,
     borderColor: 'rgba(255,255,255,0.7)',
-    marginBottom: 10,
   },
-  EpsBtnText: {
+  addEpsBtnText: {
     fontFamily: strings.FONT,
     color: colors.WHITE,
     fontSize: 25,
     padding: 10,
   },
-  delEpsBtn: {
+  delImgBtnContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    marginRight: 100,
+  },
+  delImgBtn: {
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: colors.TORCH_RED,
     borderWidth: 4,
     borderColor: 'rgba(255,255,255,0.7)',
+  },
+  delImgBtnText: {
+    fontFamily: strings.FONT,
+    color: colors.WHITE,
+    fontSize: 18,
+    padding: 10,
   },
 });

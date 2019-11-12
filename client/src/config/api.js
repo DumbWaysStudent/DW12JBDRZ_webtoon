@@ -1,7 +1,8 @@
 import axios from 'axios';
+import {BASE_URL} from 'react-native-dotenv';
 
 export const API = axios.create({
-  baseURL: 'https://toonkingdom.herokuapp.com/api/v1',
+  baseURL: BASE_URL,
   timeout: 10000,
 });
 

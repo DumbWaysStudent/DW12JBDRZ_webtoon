@@ -40,11 +40,13 @@ const styles = StyleSheet.create({
   indicatorCont: {
     flex: 1,
     backgroundColor: colors.GREEN,
+    marginTop: 5,
     paddingVertical: 24,
   },
   container: {
     alignItems: 'center',
     backgroundColor: colors.GREEN,
+    marginTop: 5,
     paddingVertical: 12,
   },
   containerEnabled: {
@@ -55,7 +57,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: colors.WHITE,
-    fontFamily: strings.FONT,
-    fontSize: 20,
+    fontFamily: strings.FONT_BOLD,
+    fontSize: 18,
   },
 });

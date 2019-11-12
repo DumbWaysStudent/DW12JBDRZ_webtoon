@@ -9,9 +9,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import colors from '../../../config/colors';
-import strings from '../../../config/strings';
-import metrics from '../../../config/metrics';
+import colors from '../../../../config/colors';
+import strings from '../../../../config/strings';
+import metrics from '../../../../config/metrics';
 
 export default class EditEpisode extends Component {
   showTitleBar = episode => {

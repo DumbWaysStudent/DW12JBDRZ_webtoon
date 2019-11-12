@@ -32,6 +32,7 @@ export const fetchData = (method, webtoon_id, bool) => {
     type: methodType,
     payload: bool,
     toon_id: webtoon_id,
+    isPost: methodType == POST_FAV_PENDING ? true : false,
     isDelete: methodType == DEL_FAV_PENDING ? true : false,
   };
 };
@@ -54,6 +55,7 @@ export const fetchDataFulfilled = (method, data) => {
     type: methodType,
     payload: data,
     isLoading: false,
+    isPost: false,
     isDelete: false,
   };
 };
@@ -76,6 +78,7 @@ export const fetchDataRejected = (method, error) => {
     type: methodType,
     payload: error,
     isLoading: false,
+    isPost: false,
     isDelete: false,
   };
 };

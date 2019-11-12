@@ -109,7 +109,6 @@ export default class Register extends Component {
           <View style={styles.form}>
             <View style={styles.titleContainer}>
               <Text style={styles.title}>{strings.WELCOME_TO_REGISTER}</Text>
-              <Text style={styles.title}>{strings.WELCOME_TITLE_APP}</Text>
             </View>
             <FormTextInput
               onChangeText={text => this.handleEmailChange(text)}

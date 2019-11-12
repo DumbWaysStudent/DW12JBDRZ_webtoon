@@ -1,5 +1,13 @@
 import React, {Component} from 'react';
-import {Text, View, TouchableOpacity, StyleSheet, Image} from 'react-native';
+import {
+  Text,
+  SafeAreaView,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ImageBackground,
+} from 'react-native';
 import {connect} from 'react-redux';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -10,12 +18,15 @@ import metrics from '../../../config/metrics';
 import {removeAuthKey} from '../../../config/auth';
 import resetAllData from '../../../_store/reset';
 
+import avatar from '../../../assets/images/avatar.png';
+import background from '../../../assets/images/background.jpg';
+
 class MyProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
       profile: {
-        name: 'Tri Aginta Ginting',
+        name: 'User',
         havePhoto: false,
         imageURI: '',
       },
@@ -32,14 +43,7 @@ class MyProfile extends Component {
         <Image style={styles.showProfPhoto} source={{uri: profile.imageURI}} />
       );
     }
-    return (
-      <Icon
-        style={styles.profileIcon}
-        name="user-circle-o"
-        size={150}
-        color={colors.DARK_GREEN}
-      />
-    );
+    return <Image style={styles.avatar} source={avatar} />;
   };
 
   showProfile = () => {
@@ -52,6 +56,11 @@ class MyProfile extends Component {
         <View style={styles.profileImg}>
           {this.showPhoto(data)}
           <Text style={styles.profileName}>{data.name}</Text>
+          <TouchableOpacity
+            style={styles.btnLogout}
+            onPress={() => this.handleLogout()}>
+            <Text style={styles.txtLogout}>{strings.LOGOUT}</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -93,16 +102,21 @@ class MyProfile extends Component {
     return (
       <View style={styles.profileContainer}>
         {this.showProfile()}
-        {this.showProfileMenu()}
+        {/* {this.showProfileMenu()} */}
       </View>
     );
   };
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.content}>{this.renderSub()}</View>
-      </View>
+      <SafeAreaView style={styles.container}>
+        <ImageBackground
+          source={background}
+          style={styles.background}
+          imageStyle={styles.bgImage}>
+          {this.renderSub()}
+        </ImageBackground>
+      </SafeAreaView>
     );
   }
 }
@@ -122,9 +136,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.WHITE,
     alignItems: 'center',
   },
-  content: {
+  background: {
     flex: 1,
-    width: '103%',
+    width: '100%',
+    height: '100%',
+  },
+  bgImage: {
+    resizeMode: 'cover',
+    opacity: 0.6,
   },
   profileContainer: {
     flex: 1,
@@ -136,7 +155,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 4,
   },
   showProfPhoto: {
     width: metrics.DEVICE_WIDTH / 2.2,
@@ -144,29 +162,49 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: metrics.DEVICE_WIDTH / 2.2 / 2,
   },
-  profileIcon: {
-    alignSelf: 'center',
+  avatar: {
+    height: 150,
+    width: 150,
+    borderRadius: 150 / 2,
   },
   profileName: {
-    fontFamily: strings.FONT,
-    fontSize: 30,
+    fontFamily: strings.FONT_BOLD,
+    fontSize: 22,
     marginTop: 10,
   },
-  profMenuContainer: {
-    flex: 1,
-  },
-  menuButtonContainer: {
-    flex: 1,
-  },
-  showProfMenu: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  btnLogout: {
+    justifyContent: 'center',
     alignItems: 'center',
-    borderBottomWidth: 4,
-    padding: 20,
+    minWidth: 100,
+    maxWidth: 100,
+    minHeight: 50,
+    maxHeight: 50,
+    marginTop: 200,
+    padding: 5,
+    backgroundColor: colors.PASTEL_BLUE,
+    borderRadius: 8,
+    elevation: 3,
   },
-  profMenuName: {
-    fontFamily: strings.FONT,
-    fontSize: 25,
+  txtLogout: {
+    fontFamily: strings.FONT_BOLD,
+    fontSize: 16,
+    color: colors.WHITE,
   },
+  // profMenuContainer: {
+  //   flex: 1,
+  // },
+  // menuButtonContainer: {
+  //   flex: 1,
+  // },
+  // showProfMenu: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  //   borderBottomWidth: 4,
+  //   padding: 20,
+  // },
+  // profMenuName: {
+  //   fontFamily: strings.FONT,
+  //   fontSize: 25,
+  // },
 });

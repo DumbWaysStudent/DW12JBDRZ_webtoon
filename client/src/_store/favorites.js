@@ -16,7 +16,15 @@ const favorites = (method, user_id, webtoon_id) => {
             dispatch(fetchDataFulfilled(method, res.data));
           })
           .catch(error => {
-            dispatch(fetchDataRejected(method, error));
+            if (error.response) {
+              const {data, status} = error.response;
+
+              if (status > 399) {
+                dispatch(fetchDataRejected(method, data.message));
+              }
+            } else {
+              dispatch(fetchDataRejected(method, error.message));
+            }
           });
       };
     case METHOD_POST:
@@ -27,7 +35,15 @@ const favorites = (method, user_id, webtoon_id) => {
             dispatch(fetchDataFulfilled(method, res.data));
           })
           .catch(error => {
-            dispatch(fetchDataRejected(method, error));
+            if (error.response) {
+              const {data, status} = error.response;
+
+              if (status > 399) {
+                dispatch(fetchDataRejected(method, data.message));
+              }
+            } else {
+              dispatch(fetchDataRejected(method, error.message));
+            }
           });
       };
     case METHOD_DELETE:
@@ -38,7 +54,15 @@ const favorites = (method, user_id, webtoon_id) => {
             dispatch(fetchDataFulfilled(method, res.data));
           })
           .catch(error => {
-            dispatch(fetchDataRejected(method, error));
+            if (error.response) {
+              const {data, status} = error.response;
+
+              if (status > 399) {
+                dispatch(fetchDataRejected(method, data.message));
+              }
+            } else {
+              dispatch(fetchDataRejected(method, error.message));
+            }
           });
       };
     default:

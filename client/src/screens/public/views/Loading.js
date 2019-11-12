@@ -1,14 +1,34 @@
 import React, {Component} from 'react';
-import {View, Image, StyleSheet, SafeAreaView} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  SafeAreaView,
+  StatusBar,
+  ImageBackground,
+} from 'react-native';
 
 import imageLogo from '../../../assets/images/logo.png';
+import background from '../../../assets/images/background.jpg';
 
 import {getAuthKey} from '../../../config/auth';
 
 export default class LoadingScreen extends Component {
   constructor(props) {
     super(props);
-    this.checkAuthorized();
+    _interval = 0;
+  }
+
+  componentDidMount() {
+    StatusBar.setBarStyle('dark-content', true);
+    StatusBar.setBackgroundColor('transparent');
+    StatusBar.setTranslucent(true);
+    this._interval = setInterval(() => {
+      this.checkAuthorized();
+    }, 2000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._interval);
   }
 
   checkAuthorized = async () => {
@@ -23,9 +43,12 @@ export default class LoadingScreen extends Component {
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.logoContainer}>
+        <ImageBackground
+          source={background}
+          style={styles.background}
+          imageStyle={styles.bgImage}>
           <Image source={imageLogo} style={styles.logo} />
-        </View>
+        </ImageBackground>
       </SafeAreaView>
     );
   }
@@ -35,10 +58,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  logoContainer: {
+  background: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  bgImage: {
+    resizeMode: 'cover',
+    opacity: 0.6,
   },
   logo: {
     width: 100,

@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: colors.LIGHT_BLUE,
   },
   formContainer: {
     width: '85%',
@@ -18,8 +19,8 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   title: {
-    fontFamily: strings.FONT,
-    fontSize: 40,
+    fontFamily: strings.FONT_BLACK,
+    fontSize: 30,
   },
   passContainer: {
     flexDirection: 'row',
@@ -41,8 +42,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 3,
   },
   modalTitle: {
-    fontFamily: strings.FONT,
-    fontSize: 28,
+    fontFamily: strings.FONT_BOLD,
+    fontSize: 16,
     marginBottom: 12,
   },
   modalMsgContainer: {
@@ -50,8 +51,8 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   modalMsg: {
-    fontFamily: strings.FONT,
-    fontSize: 20,
+    fontFamily: strings.FONT_BOLD,
+    fontSize: 16,
     opacity: 0.3,
   },
   modalTextContainer: {
@@ -60,9 +61,9 @@ const styles = StyleSheet.create({
     borderTopWidth: 3,
   },
   modalText: {
-    fontFamily: strings.FONT,
+    fontFamily: strings.FONT_BOLD,
     color: colors.BLUE,
-    fontSize: 22,
+    fontSize: 16,
     marginTop: 12,
   },
   textContainer: {
@@ -71,13 +72,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   text1: {
-    fontFamily: strings.FONT,
-    fontSize: 20,
+    fontFamily: strings.FONT_BOLD,
+    fontSize: 14,
     opacity: 0.3,
   },
   text2: {
-    fontFamily: strings.FONT,
-    fontSize: 20,
+    fontFamily: strings.FONT_BOLD,
+    fontSize: 14,
     color: colors.BLUE,
   },
 });

@@ -5,28 +5,27 @@ import {
   View,
   TextInput,
   Image,
-  ScrollView,
   TouchableOpacity,
 } from 'react-native';
 
-import colors from '../../../config/colors';
-import strings from '../../../config/strings';
-import metrics from '../../../config/metrics';
+import colors from '../../../../config/colors';
+import strings from '../../../../config/strings';
+import metrics from '../../../../config/metrics';
 
-export default class CreateEpisode extends Component {
+export default class CreateMyToon extends Component {
   constructor(props) {
     super(props);
     this.state = {
       episode: [
         {
-          page: 1,
-          name: 'cover.png',
+          index: 1,
           imageURI: strings.IMAGE1_URL,
+          dateAdded: '1 Desember 2018',
         },
         {
-          page: 2,
-          name: 'introduction.png',
-          imageURI: strings.IMAGE3_URL,
+          index: 2,
+          imageURI: strings.IMAGE2_URL,
+          dateAdded: '15 Desember 2018',
         },
       ],
     };
@@ -35,40 +34,37 @@ export default class CreateEpisode extends Component {
   showTitleBar = () => {
     return (
       <View style={styles.titleContainer}>
-        <TextInput style={styles.titleBar} />
+        <TextInput style={styles.titleBar} placeholder={strings.TYPE} />
       </View>
     );
   };
 
-  showListToon = (toon, index) => {
+  showListToon = (ep, index) => {
     return (
       <View key={index} style={styles.showListContainer}>
         <View style={styles.listImage}>
           <Image
             style={styles.showListImage}
             source={{
-              uri: toon.imageURI,
+              uri: ep.imageURI,
             }}
           />
         </View>
         <View style={styles.listNameContainer}>
           <Text style={styles.listName}>
-            {toon.page}. {toon.name}
+            {strings.EPS}
+            {ep.index}
           </Text>
-          <View style={styles.delImgBtnContainer}>
-            <TouchableOpacity style={styles.delImgBtn}>
-              <Text style={styles.delImgBtnText}>{strings.DELETE}</Text>
-            </TouchableOpacity>
-          </View>
+          <Text style={styles.epsNameDate}>{ep.dateAdded}</Text>
         </View>
       </View>
     );
   };
 
-  showListTitle = eps => {
+  showListTitle = episode => {
     return (
       <View style={styles.listsContainer}>
-        {eps.map((ep, index) => this.showListToon(ep, index))}
+        {episode.map((ep, index) => this.showListToon(ep, index))}
       </View>
     );
   };
@@ -78,15 +74,17 @@ export default class CreateEpisode extends Component {
 
     return (
       <View style={styles.createToonContainer}>
-        <Text style={styles.titleText}>{strings.NAME}</Text>
+        <Text style={styles.titleText}>{strings.TITLE}</Text>
         {this.showTitleBar()}
-        <Text style={styles.titleText}>{strings.IMAGES}</Text>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {this.showListTitle(episode)}
-        </ScrollView>
+        <Text style={styles.titleText}>{strings.EPISODE}</Text>
+        {this.showListTitle(episode)}
         <View style={styles.addEpsBtnContainer}>
-          <TouchableOpacity style={styles.addEpsBtn}>
-            <Text style={styles.addEpsBtnText}>{strings.ADD_IMAGE}</Text>
+          <TouchableOpacity
+            style={styles.addEpsBtn}
+            onPress={() => {
+              this.props.navigation.navigate('CreateEpsToon');
+            }}>
+            <Text style={styles.addEpsBtnText}>{strings.ADD_EPISODE}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -131,7 +129,7 @@ const styles = StyleSheet.create({
   },
   listsContainer: {
     flex: 1,
-    marginTop: 10,
+    marginTop: 15,
   },
   showListContainer: {
     flexDirection: 'row',
@@ -151,12 +149,17 @@ const styles = StyleSheet.create({
   },
   listName: {
     fontFamily: strings.FONT,
-    fontSize: 20,
+    fontSize: 18,
+    marginTop: 10,
+  },
+  epsNameDate: {
+    fontFamily: strings.FONT,
+    fontSize: 18,
+    opacity: 0.3,
   },
   addEpsBtnContainer: {
     flex: 1,
     justifyContent: 'center',
-    marginBottom: 50,
   },
   addEpsBtn: {
     alignItems: 'center',
@@ -169,23 +172,6 @@ const styles = StyleSheet.create({
     fontFamily: strings.FONT,
     color: colors.WHITE,
     fontSize: 25,
-    padding: 10,
-  },
-  delImgBtnContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    marginRight: 100,
-  },
-  delImgBtn: {
-    alignItems: 'center',
-    backgroundColor: colors.TORCH_RED,
-    borderWidth: 4,
-    borderColor: 'rgba(255,255,255,0.7)',
-  },
-  delImgBtnText: {
-    fontFamily: strings.FONT,
-    color: colors.WHITE,
-    fontSize: 18,
     padding: 10,
   },
 });

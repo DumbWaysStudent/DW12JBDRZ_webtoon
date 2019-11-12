@@ -13,7 +13,15 @@ const episodes = webtoon_id => {
         dispatch(fetchDataFulfilled(res.data, webtoon_id));
       })
       .catch(error => {
-        dispatch(fetchDataRejected(error));
+        if (error.response) {
+          const {data, status} = error.response;
+
+          if (status > 399) {
+            dispatch(fetchDataRejected(data.message));
+          }
+        } else {
+          dispatch(fetchDataRejected(error.message));
+        }
       });
   };
 };

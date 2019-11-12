@@ -5,8 +5,10 @@ import Button from '../../../components/public/Button';
 import FormTextInput from '../../../components/public/FormTextInput';
 import Icon from '../../../components/public/Icon';
 import Modal from '../../../components/public/Modal';
+
 import colors from '../../../config/colors';
 import strings from '../../../config/strings';
+
 import {API} from '../../../config/api';
 import {storeAuthKey} from '../../../config/auth';
 import {isValidEmail, checkSecurePass} from '../../../config/utils';
@@ -109,7 +111,6 @@ export default class Login extends Component {
           <View style={styles.form}>
             <View style={styles.titleContainer}>
               <Text style={styles.title}>{strings.WELCOME_TO_LOGIN}</Text>
-              <Text style={styles.title}>{strings.WELCOME_TITLE_APP}</Text>
             </View>
             <FormTextInput
               onChangeText={text => this.handleEmailChange(text)}

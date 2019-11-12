@@ -5,11 +5,15 @@ const colors = {
   BLUE: '#003EFF',
   DARK_GREEN: '#008B00',
   DODGER_BLUE: '#428AF8',
+  PASTEL_BLUE: '#4BAEA0',
   SILVER: '#BEBEBE',
   TORCH_RED: '#F8262F',
   MISCHKA: '#E5E4E6',
   BROWN: '#CECEAA',
   GOLD: '#CCAC00',
+  DARK_GRAY: '#A9A9A9',
+  LIGHT_BLUE: '#EEF2F5',
+  DARK_BLUE: '#0C5E96',
 };
 
 export default colors;
